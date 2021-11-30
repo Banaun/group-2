@@ -1,4 +1,4 @@
-# group-2
+# pim-g2
 Grupparbete opa21
 
 Medlemmar: <br>
