@@ -99,6 +99,11 @@ async function logIn(event) {
     }
 }
 
+function logOut() {
+    goToPage("/");
+
+}
+
 async function createAccount(event) {
     event.preventDefault();
   
@@ -345,9 +350,18 @@ function createNoteElement(id, content) {
     return element;
 }
 
+// IMAGE FUNCTIONS
+
+
+
 // RENDER FUNCTIONS
 
 function renderLoginPage() {
+    authUsername = "";
+    authPassword = "";
+    authUserID = NaN;
+    chosenFolderID = NaN;
+
     navContainer.innerHTML = "";
     notesContainer.innerHTML = "";
     headerContainer.innerHTML = "<h2>PIM-g2 Login</h1>";
@@ -384,6 +398,7 @@ function renderCreateAccountPage() {
 function renderPimPage() {
     formContainer.innerHTML = "";
     headerContainer.innerHTML = `<h1>Your Notes</h1>
+        <a id="render-images-button" onclick="renderImages()">Images</a>
         <button id="logout-button" onclick="logOut()">Logout</button>    
     `;
     navContainer.innerHTML = `

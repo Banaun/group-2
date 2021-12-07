@@ -47,14 +47,14 @@ header h2 {
 }
 
 #folder-nav {
-    height: 100%; /* Full-height: remove this if you want "auto" height */
-    width: 200px; /* Set the width of the sidebar */
-    position: fixed; /* Fixed Sidebar (stay in place on scroll) */
-    z-index: 1; /* Stay on top */
-    top: 50px; /* Stay at the top */
+    height: 100%;
+    width: 200px;
+    position: fixed;
+    z-index: 1;
+    top: 50px;
     left: 0;
-    background-color: #252525; /* Black */
-    overflow-x: hidden; /* Disable horizontal scroll */
+    background-color: #252525;
+    overflow-x: hidden;
     padding-top: 20px;
 }
 

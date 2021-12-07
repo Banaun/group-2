@@ -2,6 +2,7 @@ let headerContainer = document.getElementById("pim-header");
 let formContainer = document.getElementById("login-form-container");
 let navContainer = document.getElementById("nav-container");
 let notesContainer = document.getElementById("pim-notes-container");
+let imagesContainer = document.getElementById("pim-images-container");
 let addNoteButton;
 let sideNav;
 
@@ -350,6 +351,10 @@ function createNoteElement(id, content) {
     return element;
 }
 
+// IMAGE FUNCTIONS
+
+
+
 // RENDER FUNCTIONS
 
 function renderLoginPage() {
@@ -393,7 +398,9 @@ function renderCreateAccountPage() {
 
 function renderPimPage() {
     formContainer.innerHTML = "";
-    headerContainer.innerHTML = `<h1>Your Notes</h1>
+    headerContainer.innerHTML = `
+        <h1>Your Notes</h1>
+        <a id="render-images-button" onclick="renderImages()">Images</a>
         <button id="logout-button" onclick="logOut()">Logout</button>    
     `;
     navContainer.innerHTML = `
@@ -416,10 +423,12 @@ async function renderFolders() {
 }
 
 async function renderNotes(folderID) {
+    imagesContainer.innerHTML = "";
     notesContainer.innerHTML = `
-        <button class="add-note" type="button">+</button>
+        <label for="add-note" id="custom-note-input">+</label>
+        <input id="add-note" type="button"/> 
     `;
-    addNoteButton = notesContainer.querySelector(".add-note");
+    addNoteButton = notesContainer.querySelector("#custom-note-input");
     addNoteButton.addEventListener("click", () => addNote());
 
     notes = await getNotes(folderID);
@@ -427,4 +436,13 @@ async function renderNotes(folderID) {
         let noteElement = createNoteElement(note.id, note.notes);
         notesContainer.insertBefore(noteElement, addNoteButton);
     }
+}
+
+async function renderImages() {
+    notesContainer.innerHTML = "";
+    imagesContainer.innerHTML = `
+        <label for="image-input" id="custom-image-input">+</label>
+        <input id="image-input" type="file" accept="image/png, image/jpg, image/jpeg"/>   
+    `
+    //<div id="display-image-container"></div>
 }
