@@ -1,5 +1,5 @@
-# group-2
-Grupparbete opa21
+# pim-g2
+<strong>PIM/Notes grupparbete opa21 grupp 2</strong>
 
 Medlemmar: <br>
 Emil Mogensen <br>
