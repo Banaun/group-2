@@ -3,6 +3,7 @@ let formContainer = document.getElementById("login-form-container");
 let navContainer = document.getElementById("nav-container");
 let notesContainer = document.getElementById("pim-notes-container");
 let imagesContainer = document.getElementById("pim-images-container");
+let todoContainer = document.getElementById("pim-todo-container");
 let addNoteButton;
 let sideNav;
 
@@ -58,9 +59,6 @@ async function logIn(event) {
     
     let uname = document.getElementById("username").value;
     let pwd = document.getElementById("password").value;
-
-    console.log(uname);
-    console.log(pwd);
   
     if (uname == '') {
         alert("Please enter a username.");
@@ -161,8 +159,6 @@ async function getUserID() {
 
     userID = JSON.parse(myJSON);
 
-    console.log(userID.id);
-
     return userID.id;
 }
 
@@ -173,7 +169,6 @@ async function getFolders() {
     let result = await fetch("/rest/users/" + authUsername + "/folders");
     myJSON = await result.text();
     folders = JSON.parse(myJSON);
-    console.log(folders);
 
     return folders;
 }
@@ -183,8 +178,6 @@ async function getFolderID(folderName) {
     myJSON = await result.text();
 
     folderID = JSON.parse(myJSON);
-
-    console.log(folderID.id);
 
     return folderID.id;
 }
@@ -216,8 +209,6 @@ async function deleteFolder(deletedFolderName, element) {
         userID: authUserID,
         folderName: deletedFolderName
     }
-
-    console.log(deletedFolderName);
 
     let result = await fetch("/rest/users/" + authUsername + "/delete/" + deletedFolderName, {
         method: "DELETE",
@@ -262,15 +253,11 @@ async function getNotes(folderID) {
     myJSON = await result.text();
 
     notes = JSON.parse(myJSON);
-    console.log("notes hämtade genom chooseFolder");
-    console.log(notes);
 
     return notes;
 }
 
 function addNote() {
-    console.log("add-note-button clicked")
-
     let noteObject = {
         id: Math.floor(Math.random() * 100000),
         content: ""
@@ -283,15 +270,11 @@ function addNote() {
 }
 
 async function updateNote(noteId, newContent) {
-    console.log(newContent);
-
     let note = {
         id: noteId,
         folderID: chosenFolderID,
         notes: newContent
     };
-
-
 
     let result = await fetch("/rest/users/" + authUsername + "/" + chosenFolderID + "/notes/" + noteId, {
         method: "PUT",
@@ -310,8 +293,6 @@ async function saveNote(noteId, content, folder) {
         method: "POST",
         body: JSON.stringify(note)
     });
-
-    console.log(await result.text());
 }
 
 async function deleteNote(noteId, element) {
@@ -329,8 +310,6 @@ async function deleteNote(noteId, element) {
 
 function createNoteElement(id, content) {
     let element = document.createElement("textarea");
-
-    console.log(content);
 
     element.classList.add("note");
     element.value = content;
@@ -353,7 +332,28 @@ function createNoteElement(id, content) {
 
 // IMAGE FUNCTIONS
 
+async function addImage() {
+    console.log("addImage() clicked");
 
+    // upload image with FormData
+    let files = document.querySelector('#image-input[type=file]').files;
+    let formData = new FormData();
+
+    for(let file of files) {
+        formData.append('files', file, file.name);
+    }
+
+    // upload selected files to server
+    let uploadResult = await fetch('/rest/file-upload', {
+        method: 'POST',
+        body: formData
+    });
+
+    // get the uploaded image url from response
+    let imageUrl = await uploadResult.text();
+
+    console.log(imageUrl);
+}
 
 // RENDER FUNCTIONS
 
@@ -442,7 +442,7 @@ async function renderImages() {
     notesContainer.innerHTML = "";
     imagesContainer.innerHTML = `
         <label for="image-input" id="custom-image-input">+</label>
-        <input id="image-input" type="file" accept="image/png, image/jpg, image/jpeg"/>   
-    `
+        <input id="image-input" type="file" accept="image/png, image/jpg, image/jpeg" oninput="addImage()"/> 
+    `;
     //<div id="display-image-container"></div>
 }
