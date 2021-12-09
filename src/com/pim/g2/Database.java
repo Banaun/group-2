@@ -4,9 +4,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import io.javalin.http.UploadedFile;
 import nosqlite.utilities.Utils;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.*;
 import java.time.Instant;
@@ -188,7 +191,6 @@ public class Database {
 
     public String uploadImage(UploadedFile file) {
         String imageUrl = "/uploads/" + file.getFilename();
-        System.out.println(imageUrl);
 
         try (var os = new FileOutputStream(Paths.get("src/www" + imageUrl).toString())) {
 
@@ -198,6 +200,8 @@ public class Database {
 
             return null;
         }
+
+        System.out.println("Image uploaded to " + imageUrl);
 
         return imageUrl;
     }
@@ -314,6 +318,8 @@ public class Database {
     }
 
     public void deleteImage(ImagePost image) {
+        deleteFileUpload(image.getImageUrl());
+
         try {
             PreparedStatement stmt = conn.prepareStatement(("DELETE FROM Images WHERE imageUrl = ?"));
             stmt.setString(1, image.getImageUrl());
@@ -321,6 +327,19 @@ public class Database {
             stmt.executeUpdate();
 
         } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void deleteFileUpload(String directoryName) {
+        Path imagePath = Paths.get("src/www/" + directoryName);
+
+        try {
+            Files.delete(imagePath);
+            System.out.println("File @" + directoryName + " successfully removed.");
+
+        } catch (Exception e) {
+            System.err.println("Unable to delete file.");
             e.printStackTrace();
         }
     }

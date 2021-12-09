@@ -346,14 +346,21 @@ async function getImages() {
     return images;
 }
 
-function showImage(element) {
+function showImage(imageUrl, element) {
     console.log("showImage() clicked");
 
     modal.style.display = "block";
-    modalImg.src = element.src;
+    modalImg.src = imageUrl;
 
     window.onclick = function(event) {
         if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+
+    window.ondblclick = function(event) {
+        if (event.target == modalImg) {
+            deleteImage(imageUrl, element);
             modal.style.display = "none";
         }
     }
@@ -416,7 +423,7 @@ function createImageElement(imageUrl) {
     element.alt = "There should be an image here...";
 
     element.addEventListener("click", () => {
-        showImage(element);
+        showImage(imageUrl, element);
     })
 
     element.addEventListener("dblclick", () => {

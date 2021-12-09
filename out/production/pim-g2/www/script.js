@@ -6,6 +6,8 @@ let imagesContainer = document.getElementById("pim-images-container");
 let todoContainer = document.getElementById("pim-todo-container");
 let addNoteButton;
 let sideNav;
+let modal;
+let modalImg;
 
 let loggedIn;
 let authUsername;
@@ -344,8 +346,24 @@ async function getImages() {
     return images;
 }
 
-function showImage() {
+function showImage(imageUrl, element) {
     console.log("showImage() clicked");
+
+    modal.style.display = "block";
+    modalImg.src = imageUrl;
+
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+
+    window.ondblclick = function(event) {
+        if (event.target == modalImg) {
+            deleteImage(imageUrl, element);
+            modal.style.display = "none";
+        }
+    }
 }
 
 async function addImage() {
@@ -384,7 +402,6 @@ async function addImage() {
 
 async function deleteImage(deletedImageUrl, element) {
     console.log("deleteImage() clicked");
-    console.log(deletedImageUrl);
 
     let image = {
         imageUrl: deletedImageUrl,
@@ -400,14 +417,13 @@ async function deleteImage(deletedImageUrl, element) {
 
 function createImageElement(imageUrl) {
     let element = document.createElement("img");
-    console.log(imageUrl);
 
     element.classList.add("image");
     element.src = imageUrl;
     element.alt = "There should be an image here...";
 
     element.addEventListener("click", () => {
-        showImage();
+        showImage(imageUrl, element);
     })
 
     element.addEventListener("dblclick", () => {
@@ -508,8 +524,21 @@ async function renderImages() {
     notesContainer.innerHTML = "";
     imagesContainer.innerHTML = `
         <label for="image-input" id="custom-image-input">+</label>
-        <input id="image-input" type="file" accept="image/*" oninput="addImage()"/> 
+        <input id="image-input" type="file" accept="image/*" oninput="addImage()"/>
+        <!-- The Modal -->
+        <div id="myModal" class="modal">
+
+            <!-- Modal Content (The Image) -->
+            <img class="modal-content" id="img01">
+
+            <!-- Modal Caption (Image Text) -->
+            <div id="caption"></div>
+
+        </div> 
     `;
+
+    modal = document.getElementById("myModal");
+    modalImg = document.getElementById("img01");
 
     images = await getImages()
     for (const image of images) {
