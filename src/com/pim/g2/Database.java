@@ -313,6 +313,18 @@ public class Database {
         }
     }
 
+    public void deleteImage(ImagePost image) {
+        try {
+            PreparedStatement stmt = conn.prepareStatement(("DELETE FROM Images WHERE imageUrl = ?"));
+            stmt.setString(1, image.getImageUrl());
+
+            stmt.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void deleteAllNotesInFolder(Folder folder) {
         try {
             PreparedStatement stmt = conn.prepareStatement("DELETE FROM Notes WHERE Notes.folderId = ?");

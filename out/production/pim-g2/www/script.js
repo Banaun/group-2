@@ -344,6 +344,10 @@ async function getImages() {
     return images;
 }
 
+function showImage() {
+    console.log("showImage() clicked");
+}
+
 async function addImage() {
     console.log("addImage() clicked");
 
@@ -356,7 +360,7 @@ async function addImage() {
     }
 
     // upload selected files to server
-    let uploadResult = await fetch('/rest/file-upload', {
+    let uploadResult = await fetch('/rest/image-upload', {
         method: 'POST',
         body: formData
     });
@@ -378,24 +382,41 @@ async function addImage() {
     });
 }
 
+async function deleteImage(deletedImageUrl, element) {
+    console.log("deleteImage() clicked");
+    console.log(deletedImageUrl);
+
+    let image = {
+        imageUrl: deletedImageUrl,
+    }
+
+    let result = await fetch("/rest/users/" + authUsername + "/images/delete", {
+        method: "DELETE",
+        body: JSON.stringify(image)
+    });
+
+    imagesContainer.removeChild(element);
+}
+
 function createImageElement(imageUrl) {
     let element = document.createElement("img");
+    console.log(imageUrl);
 
     element.classList.add("image");
     element.src = imageUrl;
     element.alt = "There should be an image here...";
 
-    /*element.addEventListener("click", () => {
+    element.addEventListener("click", () => {
         showImage();
-    });*/
+    })
 
-    /*element.addEventListener("dblclick", () => {
+    element.addEventListener("dblclick", () => {
         let doDelete = confirm("Are you sure you wish to delete this image?");
     
         if (doDelete) {
-          deleteImage(id, element);
+          deleteImage(imageUrl, element);
         }
-    });*/
+    })
 
     return element;
 }

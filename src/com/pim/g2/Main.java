@@ -145,6 +145,14 @@ public class Main {
             db.deleteNote(note);
         });
 
+        app.delete("/rest/users/:username/images/delete", (req, res) -> {
+            String username = req.params("username");
+
+            ImagePost image = req.body(ImagePost.class);
+
+            db.deleteImage(image);
+        });
+
         app.useStatic(Paths.get("src/www"));
 
         app.listen(3000);
