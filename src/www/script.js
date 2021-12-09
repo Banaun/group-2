@@ -356,7 +356,7 @@ async function addImage() {
     }
 
     // upload selected files to server
-    let uploadResult = await fetch('/rest/file-upload', {
+    let uploadResult = await fetch('/rest/image-upload', {
         method: 'POST',
         body: formData
     });

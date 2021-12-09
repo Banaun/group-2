@@ -69,7 +69,7 @@ public class Main {
             res.json(note);
         });
 
-        app.post("/rest/file-upload", (req, res) -> {
+        app.post("/rest/image-upload", (req, res) -> {
             String imageUrl = null;
 
             UploadedFile file = req.formDataFile("files");
