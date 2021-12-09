@@ -19,6 +19,8 @@ let notes = [];
 let images = [];
 let folders = [];
 
+// CHANGE PAGE FUNCTIONS
+
 onhashchange = changePage;
 changePage();
 
