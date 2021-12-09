@@ -13,13 +13,13 @@ public class ImagePost {
 
     }
 
-    public ImagePost(int id, String imageUrl) {
-        this.id = id;
+    public ImagePost(int folderId, String imageUrl) {
+        this.folderId = folderId;
         this.imageUrl = imageUrl;
     }
 
-    public ImagePost(int id, String title, String imageUrl) {
-        this.id = id;
+    public ImagePost(int folderId, String title, String imageUrl) {
+        this.folderId = folderId;
         this.title = title;
         this.imageUrl = imageUrl;
     }

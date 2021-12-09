@@ -102,15 +102,24 @@ public class Database {
         return notes;
     }
 
-    public List<ImagePost> getImagePosts() {
+    public List<ImagePost> getImagePosts(String username, int folderID) {
         List<ImagePost> imagePosts = null;
 
         try {
-            PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Images");
+            PreparedStatement stmt = conn.prepareStatement("SELECT Images.imageUrl AS imageUrl " +
+                    "FROM Images " +
+                    "INNER JOIN Folders " +
+                    "ON Folders.id = Images.folderId " +
+                    "INNER JOIN Users " +
+                    "ON Users.id = Folders.userId " +
+                    "WHERE Users.username = ? AND Folders.id = ?");
+            stmt.setString(1, username);
+            stmt.setInt(2, folderID);
+
             ResultSet rs = stmt.executeQuery();
 
-            ImagePost[] usersFromRS = (Utils.resultSetToObject(rs, ImagePost[].class));
-            imagePosts = List.of(usersFromRS);
+            ImagePost[] imagesFromRS = (Utils.resultSetToObject(rs, ImagePost[].class));
+            imagePosts = List.of(imagesFromRS);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -165,10 +174,10 @@ public class Database {
 
     public void createImagePost(ImagePost imagePost) {
         try {
-            PreparedStatement stmt = conn.prepareStatement("INSERT INTO blog_posts (folderId, title, imageUrl) VALUES(?, ?, ?)");
+            PreparedStatement stmt = conn.prepareStatement("INSERT INTO Images (folderId, title, imageUrl) VALUES(?, ?, ?)");
             stmt.setInt(1, imagePost.getFolderId());
-            stmt.setString(1, imagePost.getTitle());
-            stmt.setString(4, imagePost.getImageUrl());
+            stmt.setString(2, imagePost.getTitle());
+            stmt.setString(3, imagePost.getImageUrl());
 
             stmt.executeUpdate();
 

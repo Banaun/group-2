@@ -14,6 +14,7 @@ let authUserID;
 let chosenFolderID;
 let users = [];
 let notes = [];
+let images = [];
 let folders = [];
 
 onhashchange = changePage;
@@ -332,6 +333,17 @@ function createNoteElement(id, content) {
 
 // IMAGE FUNCTIONS
 
+async function getImages() {
+    console.log(chosenFolderID);
+
+    let result = await fetch("/rest/users/" + authUsername + "/" + chosenFolderID + "/images");
+    myJSON = await result.text();
+
+    images = JSON.parse(myJSON);
+
+    return images;
+}
+
 async function addImage() {
     console.log("addImage() clicked");
 
@@ -350,9 +362,42 @@ async function addImage() {
     });
 
     // get the uploaded image url from response
-    let imageUrl = await uploadResult.text();
+    let uploadedImageUrl = await uploadResult.text();
 
-    console.log(imageUrl);
+    console.log(uploadedImageUrl);
+
+    let imagePost = {
+        folderId: chosenFolderID,
+        title: "jaja",
+        imageUrl: uploadedImageUrl
+    }
+
+    let result = await fetch("/rest/file-upload/imagepost", {
+        method: "POST",
+        body: JSON.stringify(imagePost)
+    });
+}
+
+function createImageElement(imageUrl) {
+    let element = document.createElement("img");
+
+    element.classList.add("image");
+    element.src = imageUrl;
+    element.alt = "There should be an image here...";
+
+    /*element.addEventListener("click", () => {
+        showImage();
+    });*/
+
+    /*element.addEventListener("dblclick", () => {
+        let doDelete = confirm("Are you sure you wish to delete this image?");
+    
+        if (doDelete) {
+          deleteImage(id, element);
+        }
+    });*/
+
+    return element;
 }
 
 // RENDER FUNCTIONS
@@ -442,7 +487,12 @@ async function renderImages() {
     notesContainer.innerHTML = "";
     imagesContainer.innerHTML = `
         <label for="image-input" id="custom-image-input">+</label>
-        <input id="image-input" type="file" accept="image/png, image/jpg, image/jpeg" oninput="addImage()"/> 
+        <input id="image-input" type="file" accept="image/*" oninput="addImage()"/> 
     `;
-    //<div id="display-image-container"></div>
+
+    images = await getImages()
+    for (const image of images) {
+        let imageElement = createImageElement(image.imageUrl);
+        imagesContainer.insertBefore(imageElement, imagesContainer.querySelector("#custom-image-input"));
+    }
 }

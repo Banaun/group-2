@@ -49,8 +49,11 @@ public class Main {
             res.json(folder);
         });
 
-        app.get("/rest/users/:username/:folder/images", (req, res) -> {
-            List<ImagePost> imagePosts = db.getImagePosts();
+        app.get("/rest/users/:username/:folderID/images", (req, res) -> {
+            String username = req.params("username");
+            int folderID = Integer.parseInt(req.params("folderID"));
+
+            List<ImagePost> imagePosts = db.getImagePosts(username, folderID);
             res.json(imagePosts);
         });
 
@@ -75,7 +78,7 @@ public class Main {
             res.send(imageUrl);
         });
 
-        app.post("/rest/users/:username/:folder/images", (req, res) -> {
+        app.post("/rest/file-upload/imagepost", (req, res) -> {
             ImagePost imagePost = req.body(ImagePost.class);
 
             db.createImagePost(imagePost);

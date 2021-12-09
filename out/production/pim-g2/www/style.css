@@ -171,8 +171,7 @@ form {
 
 #pim-images-container {
     display: grid;
-    grid-template-columns: auto auto auto;
-    grid-template-rows: auto auto;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
     grid-gap: 10px;
     padding: 24px;
     gap: 24px;
@@ -192,12 +191,10 @@ form {
     transition: background 0.2s;
 }
 
-#display-image-container {
-    width: 375px;
-    height: 211px;
-    border: 1px solid black;
-    background-position: center;
-    background-size: cover;
+.image {
+    width: 100%;
+    max-width: 239px;
+    height: auto;
 }
 
 #add-note {
