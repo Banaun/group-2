@@ -1,6 +1,7 @@
 package com.pim.g2;
 
 import express.Express;
+import io.javalin.http.UploadedFile;
 
 import java.nio.file.Paths;
 import java.util.List;
@@ -48,6 +49,14 @@ public class Main {
             res.json(folder);
         });
 
+        app.get("/rest/users/:username/:folderID/images", (req, res) -> {
+            String username = req.params("username");
+            int folderID = Integer.parseInt(req.params("folderID"));
+
+            List<ImagePost> imagePosts = db.getImagePosts(username, folderID);
+            res.json(imagePosts);
+        });
+
         //POST-METHODS
 
         app.post("/rest/users/:username/:folder/notes", (req, res) -> {
@@ -58,6 +67,22 @@ public class Main {
             db.addNote(note);
 
             res.json(note);
+        });
+
+        app.post("/rest/file-upload", (req, res) -> {
+            String imageUrl = null;
+
+            UploadedFile file = req.formDataFile("files");
+            imageUrl = db.uploadImage(file);
+
+            res.send(imageUrl);
+        });
+
+        app.post("/rest/file-upload/imagepost", (req, res) -> {
+            ImagePost imagePost = req.body(ImagePost.class);
+
+            db.createImagePost(imagePost);
+            res.send("post OK");
         });
 
         app.post("/rest/users/:username/newfolder", (req, res) -> {

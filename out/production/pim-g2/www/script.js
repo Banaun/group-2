@@ -2,6 +2,8 @@ let headerContainer = document.getElementById("pim-header");
 let formContainer = document.getElementById("login-form-container");
 let navContainer = document.getElementById("nav-container");
 let notesContainer = document.getElementById("pim-notes-container");
+let imagesContainer = document.getElementById("pim-images-container");
+let todoContainer = document.getElementById("pim-todo-container");
 let addNoteButton;
 let sideNav;
 
@@ -12,6 +14,7 @@ let authUserID;
 let chosenFolderID;
 let users = [];
 let notes = [];
+let images = [];
 let folders = [];
 
 onhashchange = changePage;
@@ -57,9 +60,6 @@ async function logIn(event) {
     
     let uname = document.getElementById("username").value;
     let pwd = document.getElementById("password").value;
-
-    console.log(uname);
-    console.log(pwd);
   
     if (uname == '') {
         alert("Please enter a username.");
@@ -97,6 +97,11 @@ async function logIn(event) {
         document.getElementById("login-form").reset();
         return;
     }
+}
+
+function logOut() {
+    goToPage("/");
+
 }
 
 async function createAccount(event) {
@@ -155,8 +160,6 @@ async function getUserID() {
 
     userID = JSON.parse(myJSON);
 
-    console.log(userID.id);
-
     return userID.id;
 }
 
@@ -167,7 +170,6 @@ async function getFolders() {
     let result = await fetch("/rest/users/" + authUsername + "/folders");
     myJSON = await result.text();
     folders = JSON.parse(myJSON);
-    console.log(folders);
 
     return folders;
 }
@@ -177,8 +179,6 @@ async function getFolderID(folderName) {
     myJSON = await result.text();
 
     folderID = JSON.parse(myJSON);
-
-    console.log(folderID.id);
 
     return folderID.id;
 }
@@ -210,8 +210,6 @@ async function deleteFolder(deletedFolderName, element) {
         userID: authUserID,
         folderName: deletedFolderName
     }
-
-    console.log(deletedFolderName);
 
     let result = await fetch("/rest/users/" + authUsername + "/delete/" + deletedFolderName, {
         method: "DELETE",
@@ -256,15 +254,11 @@ async function getNotes(folderID) {
     myJSON = await result.text();
 
     notes = JSON.parse(myJSON);
-    console.log("notes hämtade genom chooseFolder");
-    console.log(notes);
 
     return notes;
 }
 
 function addNote() {
-    console.log("add-note-button clicked")
-
     let noteObject = {
         id: Math.floor(Math.random() * 100000),
         content: ""
@@ -277,15 +271,11 @@ function addNote() {
 }
 
 async function updateNote(noteId, newContent) {
-    console.log(newContent);
-
     let note = {
         id: noteId,
         folderID: chosenFolderID,
         notes: newContent
     };
-
-
 
     let result = await fetch("/rest/users/" + authUsername + "/" + chosenFolderID + "/notes/" + noteId, {
         method: "PUT",
@@ -304,8 +294,6 @@ async function saveNote(noteId, content, folder) {
         method: "POST",
         body: JSON.stringify(note)
     });
-
-    console.log(await result.text());
 }
 
 async function deleteNote(noteId, element) {
@@ -323,8 +311,6 @@ async function deleteNote(noteId, element) {
 
 function createNoteElement(id, content) {
     let element = document.createElement("textarea");
-
-    console.log(content);
 
     element.classList.add("note");
     element.value = content;
@@ -345,9 +331,83 @@ function createNoteElement(id, content) {
     return element;
 }
 
+// IMAGE FUNCTIONS
+
+async function getImages() {
+    console.log(chosenFolderID);
+
+    let result = await fetch("/rest/users/" + authUsername + "/" + chosenFolderID + "/images");
+    myJSON = await result.text();
+
+    images = JSON.parse(myJSON);
+
+    return images;
+}
+
+async function addImage() {
+    console.log("addImage() clicked");
+
+    // upload image with FormData
+    let files = document.querySelector('#image-input[type=file]').files;
+    let formData = new FormData();
+
+    for(let file of files) {
+        formData.append('files', file, file.name);
+    }
+
+    // upload selected files to server
+    let uploadResult = await fetch('/rest/file-upload', {
+        method: 'POST',
+        body: formData
+    });
+
+    // get the uploaded image url from response
+    let uploadedImageUrl = await uploadResult.text();
+
+    console.log(uploadedImageUrl);
+
+    let imagePost = {
+        folderId: chosenFolderID,
+        title: "jaja",
+        imageUrl: uploadedImageUrl
+    }
+
+    let result = await fetch("/rest/file-upload/imagepost", {
+        method: "POST",
+        body: JSON.stringify(imagePost)
+    });
+}
+
+function createImageElement(imageUrl) {
+    let element = document.createElement("img");
+
+    element.classList.add("image");
+    element.src = imageUrl;
+    element.alt = "There should be an image here...";
+
+    /*element.addEventListener("click", () => {
+        showImage();
+    });*/
+
+    /*element.addEventListener("dblclick", () => {
+        let doDelete = confirm("Are you sure you wish to delete this image?");
+    
+        if (doDelete) {
+          deleteImage(id, element);
+        }
+    });*/
+
+    return element;
+}
+
 // RENDER FUNCTIONS
 
 function renderLoginPage() {
+    authUsername = "";
+    authPassword = "";
+    authUserID = NaN;
+    chosenFolderID = NaN;
+
     navContainer.innerHTML = "";
     notesContainer.innerHTML = "";
     headerContainer.innerHTML = "<h2>PIM-g2 Login</h1>";
@@ -383,7 +443,9 @@ function renderCreateAccountPage() {
 
 function renderPimPage() {
     formContainer.innerHTML = "";
-    headerContainer.innerHTML = `<h1>Your Notes</h1>
+    headerContainer.innerHTML = `
+        <h1>Your Notes</h1>
+        <a id="render-images-button" onclick="renderImages()">Images</a>
         <button id="logout-button" onclick="logOut()">Logout</button>    
     `;
     navContainer.innerHTML = `
@@ -406,15 +468,31 @@ async function renderFolders() {
 }
 
 async function renderNotes(folderID) {
+    imagesContainer.innerHTML = "";
     notesContainer.innerHTML = `
-        <button class="add-note" type="button">+</button>
+        <label for="add-note" id="custom-note-input">+</label>
+        <input id="add-note" type="button"/> 
     `;
-    addNoteButton = notesContainer.querySelector(".add-note");
+    addNoteButton = notesContainer.querySelector("#custom-note-input");
     addNoteButton.addEventListener("click", () => addNote());
 
     notes = await getNotes(folderID);
     for (const note of notes) {
         let noteElement = createNoteElement(note.id, note.notes);
         notesContainer.insertBefore(noteElement, addNoteButton);
+    }
+}
+
+async function renderImages() {
+    notesContainer.innerHTML = "";
+    imagesContainer.innerHTML = `
+        <label for="image-input" id="custom-image-input">+</label>
+        <input id="image-input" type="file" accept="image/*" oninput="addImage()"/> 
+    `;
+
+    images = await getImages()
+    for (const image of images) {
+        let imageElement = createImageElement(image.imageUrl);
+        imagesContainer.insertBefore(imageElement, imagesContainer.querySelector("#custom-image-input"));
     }
 }

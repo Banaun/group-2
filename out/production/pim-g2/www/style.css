@@ -26,6 +26,21 @@ header h2 {
     color: #818181;
 }
 
+#render-images-button {
+    margin: auto;
+    padding: 6px 8px 6px 8px;
+    text-decoration: none;
+    font-size: 20px;
+    color: #818181;
+    display: block;
+}
+    
+#render-images-button:hover {
+    color: #f1f1f1;
+    cursor: pointer;
+}
+
+
 #login-form-container {
     margin: auto;
 }
@@ -47,14 +62,14 @@ header h2 {
 }
 
 #folder-nav {
-    height: 100%; /* Full-height: remove this if you want "auto" height */
-    width: 200px; /* Set the width of the sidebar */
-    position: fixed; /* Fixed Sidebar (stay in place on scroll) */
-    z-index: 1; /* Stay on top */
-    top: 50px; /* Stay at the top */
+    height: 100%;
+    width: 200px;
+    position: fixed;
+    z-index: 1;
+    top: 50px;
     left: 0;
-    background-color: #252525; /* Black */
-    overflow-x: hidden; /* Disable horizontal scroll */
+    background-color: #252525;
+    overflow-x: hidden;
     padding-top: 20px;
 }
 
@@ -127,9 +142,10 @@ form {
     grid-gap: 10px;
     padding: 24px;
     gap: 24px;
+    text-align: center;
 }
 
-.add-note {
+#custom-note-input {
     height: 200px;
     width: 239px;
     border: none;
@@ -151,6 +167,42 @@ form {
     box-shadow: 0 0 7px rgba(0, 0, 0, 0.15);
     resize: none;
     font-size: 16px;
+}
+
+#pim-images-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    grid-gap: 10px;
+    padding: 24px;
+    gap: 24px;
+    text-align: center;
+}
+
+#custom-image-input {
+    height: 200px;
+    width: 239px;
+    border: none;
+    outline: none;
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    font-size: 120px;
+    color: rgba(0, 0, 0, 0.5);
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.image {
+    width: 100%;
+    max-width: 239px;
+    height: auto;
+}
+
+#add-note {
+    display: none;
+}
+
+input[type="file"] {
+    display: none;
 }
 
 * {
