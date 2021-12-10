@@ -69,7 +69,7 @@ public class Main {
             res.json(note);
         });
 
-        app.post("/rest/file-upload", (req, res) -> {
+        app.post("/rest/image-upload", (req, res) -> {
             String imageUrl = null;
 
             UploadedFile file = req.formDataFile("files");
@@ -143,6 +143,14 @@ public class Main {
             Note note = req.body(Note.class);
 
             db.deleteNote(note);
+        });
+
+        app.delete("/rest/users/:username/images/delete", (req, res) -> {
+            String username = req.params("username");
+
+            ImagePost image = req.body(ImagePost.class);
+
+            db.deleteImage(image);
         });
 
         app.useStatic(Paths.get("src/www"));

@@ -6,6 +6,8 @@ let imagesContainer = document.getElementById("pim-images-container");
 let todoContainer = document.getElementById("pim-todo-container");
 let addNoteButton;
 let sideNav;
+let modal;
+let modalImg;
 
 let loggedIn;
 let authUsername;
@@ -363,6 +365,26 @@ async function getImages() {
   return images;
 }
 
+function showImage(imageUrl, element) {
+    console.log("showImage() clicked");
+
+    modal.style.display = "block";
+    modalImg.src = imageUrl;
+
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+
+    window.ondblclick = function(event) {
+        if (event.target == modalImg) {
+            deleteImage(imageUrl, element);
+            modal.style.display = "none";
+        }
+    }
+}
+
 async function addImage() {
   console.log("addImage() clicked");
 
@@ -374,11 +396,11 @@ async function addImage() {
     formData.append("files", file, file.name);
   }
 
-  // upload selected files to server
-  let uploadResult = await fetch("/rest/file-upload", {
-    method: "POST",
-    body: formData,
-  });
+    // upload selected files to server
+    let uploadResult = await fetch('/rest/image-upload', {
+        method: 'POST',
+        body: formData
+    });
 
   // get the uploaded image url from response
   let uploadedImageUrl = await uploadResult.text();
@@ -397,6 +419,21 @@ async function addImage() {
   });
 }
 
+async function deleteImage(deletedImageUrl, element) {
+    console.log("deleteImage() clicked");
+
+    let image = {
+        imageUrl: deletedImageUrl,
+    }
+
+    let result = await fetch("/rest/users/" + authUsername + "/images/delete", {
+        method: "DELETE",
+        body: JSON.stringify(image)
+    });
+
+    imagesContainer.removeChild(element);
+}
+
 function createImageElement(imageUrl) {
   let element = document.createElement("img");
 
@@ -404,17 +441,17 @@ function createImageElement(imageUrl) {
   element.src = imageUrl;
   element.alt = "There should be an image here...";
 
-  /*element.addEventListener("click", () => {
-        showImage();
-    });*/
+    element.addEventListener("click", () => {
+        showImage(imageUrl, element);
+    })
 
-  /*element.addEventListener("dblclick", () => {
+    element.addEventListener("dblclick", () => {
         let doDelete = confirm("Are you sure you wish to delete this image?");
     
         if (doDelete) {
-          deleteImage(id, element);
+          deleteImage(imageUrl, element);
         }
-    });*/
+    })
 
   return element;
 }
@@ -514,15 +551,25 @@ async function renderImages() {
   notesContainer.innerHTML = "";
   imagesContainer.innerHTML = `
         <label for="image-input" id="custom-image-input">+</label>
-        <input id="image-input" type="file" accept="image/*" oninput="addImage()"/> 
+        <input id="image-input" type="file" accept="image/*" oninput="addImage()"/>
+        <!-- The Modal -->
+        <div id="myModal" class="modal">
+
+            <!-- Modal Content (The Image) -->
+            <img class="modal-content" id="img01">
+
+            <!-- Modal Caption (Image Text) -->
+            <div id="caption"></div>
+
+        </div> 
     `;
 
-  images = await getImages();
-  for (const image of images) {
-    let imageElement = createImageElement(image.imageUrl);
-    imagesContainer.insertBefore(
-      imageElement,
-      imagesContainer.querySelector("#custom-image-input")
-    );
-  }
+    modal = document.getElementById("myModal");
+    modalImg = document.getElementById("img01");
+
+    images = await getImages()
+    for (const image of images) {
+        let imageElement = createImageElement(image.imageUrl);
+        imagesContainer.insertBefore(imageElement, imagesContainer.querySelector("#custom-image-input"));
+    }
 }
