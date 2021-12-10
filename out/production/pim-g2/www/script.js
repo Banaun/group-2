@@ -19,6 +19,8 @@ let notes = [];
 let images = [];
 let folders = [];
 
+// CHANGE PAGE FUNCTIONS
+
 onhashchange = changePage;
 changePage();
 
@@ -450,9 +452,9 @@ function renderLoginPage() {
     headerContainer.innerHTML = "<h2>PIM-g2 Login</h1>";
     formContainer.innerHTML = `
         <form id="login-form">
-            <label for="username">Username</label><br />
+            <label for="username" class="username-label">Username</label><br />
             <input id="username" type="text" /><br />
-            <label for="password">Password</label><br />
+            <label for="password" class="password-label">Password</label><br />
             <input id="password" type="password" /><br />
             <button id="btn-login" type="submit">Login</button>
         </form>
@@ -467,9 +469,9 @@ function renderCreateAccountPage() {
     notesContainer.innerHTML = "";
     formContainer.innerHTML = `
         <form id="create-account-form">
-            <label for="username">New Username</label><br />
+            <label for="username" class="username-label">New Username</label><br />
             <input id="username" type="text" /><br />
-            <label for="password">New Password</label><br />
+            <label for="password" class="password-label">New Password</label><br />
             <input id="password" type="password" /><br />
             <button id="btn-create-account"type="submit">Create account</button>
         </form>
