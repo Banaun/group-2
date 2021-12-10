@@ -1,211 +1,254 @@
 body {
-    display: flex;
-    flex-direction: column;
-    margin: 0;
-    background-color: #bdbdbd;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  background-color: #bdbdbd;
 }
 
 header {
-    width: 100%;
-    height: 50px;
-    background-color: #252525;
-    position: fixed;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
+  width: 100%;
+  height: 50px;
+  background-color: #252525;
+  position: fixed;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 }
 
 header h1 {
-    margin-top: 0;
-    margin-left: 15px;
-    color: #818181;
+  margin-top: 0;
+  margin-left: 15px;
+  color: #818181;
 }
 
 header h2 {
-    margin: auto;
-    color: #818181;
+  margin: auto;
+  color: #818181;
 }
 
 #render-images-button {
-    margin: auto;
-    padding: 6px 8px 6px 8px;
-    text-decoration: none;
-    font-size: 20px;
-    color: #818181;
-    display: block;
-}
-    
-#render-images-button:hover {
-    color: #f1f1f1;
-    cursor: pointer;
+  margin: auto;
+  padding: 6px 8px 6px 8px;
+  text-decoration: none;
+  font-size: 20px;
+  color: #818181;
+  display: block;
 }
 
+#render-images-button:hover {
+  color: #f1f1f1;
+  cursor: pointer;
+}
 
 #login-form-container {
-    margin: auto;
+  margin: auto;
 }
 
 #main-area-container {
-    margin-left: 200px;
-    margin-top: 60px;
-    display: flex;
-    justify-content: center;
+  margin-left: 200px;
+  margin-top: 60px;
+  display: flex;
+  justify-content: center;
+  transition: margin-left 0.5s;
 }
 
 #logout-button {
-    margin-left: 200px;
-    width: 80px;
-    font-size: 20;
-    background-color: #616161;
-    color: #bdbdbd;
-    font-weight: bold;
+  margin-left: 200px;
+  width: 80px;
+  font-size: 20;
+  background-color: #616161;
+  color: #bdbdbd;
+  font-weight: bold;
 }
 
 #folder-nav {
-    height: 100%;
-    width: 200px;
-    position: fixed;
-    z-index: 1;
-    top: 50px;
-    left: 0;
-    background-color: #252525;
-    overflow-x: hidden;
-    padding-top: 20px;
+  height: 100%;
+  width: 200px;
+  position: fixed;
+  z-index: 1;
+  top: 50px;
+  left: 0;
+  background-color: #252525;
+  overflow-x: hidden;
+  padding-top: 20px;
 }
 
 form {
-    margin: auto;
-    width: 177px;
-    border: 1px solid black;
-    padding: 20px;
-    color: black;
-    font-weight: bold;
-    background-color: #9F9F9F;
+  margin: auto;
+  width: 177px;
+  border: 1px solid black;
+  padding: 20px;
+  color: black;
+  font-weight: bold;
+  background-color: #9f9f9f;
 }
 
 #btn-login {
-    background-color: #616161;
-    color: white;
-    margin-top: 20px;
-    margin-left: 46px;
-    width: 80px;
-    height: 35px;
+  background-color: #616161;
+  color: white;
+  margin-top: 20px;
+  margin-left: 46px;
+  width: 80px;
+  height: 35px;
 }
 
 #btn-create-account {
-    background-color: #616161;
-    color: white;
-    margin-top: 20px;
-    margin-left: 18px;
-    width: 140px;
-    height: 35px;
+  background-color: #616161;
+  color: white;
+  margin-top: 20px;
+  margin-left: 18px;
+  width: 140px;
+  height: 35px;
 }
 
 #btn-go-to-create-account {
-    margin-top: 30px;
-    margin-left: 10px;
-    width: 200px;
-    height: 60px;
-    background-color: #616161;
-    color: white;
+  margin-top: 30px;
+  margin-left: 10px;
+  width: 200px;
+  height: 60px;
+  background-color: #616161;
+  color: white;
 }
 
 #sidenav {
-    height: 100%; /* Full-height: remove this if you want "auto" height */
-    width: 200px; /* Set the width of the sidebar */
-    position: fixed; /* Fixed Sidebar (stay in place on scroll) */
-    z-index: 1; /* Stay on top */
-    top: 50px; /* Stay at the top */
-    left: 0;
-    background-color: #252525; /* Black */
-    overflow-x: hidden; /* Disable horizontal scroll */
-    padding-top: 20px;
+  height: 100%; /* Full-height: remove this if you want "auto" height */
+  width: 200px; /* Set the width of the sidebar */
+  position: fixed; /* Fixed Sidebar (stay in place on scroll) */
+  z-index: 1; /* Stay on top */
+  top: 50px; /* Stay at the top */
+  left: 0;
+  background-color: #252525; /* Black */
+  overflow-x: hidden; /* Disable horizontal scroll */
+  padding-top: 20px;
 }
 
 #sidenav a {
-    padding: 6px 8px 6px 16px;
-    text-decoration: none;
-    font-size: 16px;
-    color: #818181;
-    display: block;
+  padding: 6px 8px 6px 16px;
+  text-decoration: none;
+  font-size: 16px;
+  color: #818181;
+  display: block;
 }
 
 #sidenav a:hover {
-    color: #f1f1f1;
-    cursor: pointer;
+  color: #f1f1f1;
+  cursor: pointer;
+}
+#itemsnav {
+  height: 100%; /* Full-height: remove this if you want "auto" height */
+  width: 0; /* Set the width of the sidebar */
+  position: fixed; /* Fixed Sidebar (stay in place on scroll) */
+  z-index: 1; /* Stay on top */
+  top: 50px; /* Stay at the top */
+  left: 0;
+  background-color: #5c5c5c; /* Black */
+  overflow-x: hidden; /* Disable horizontal scroll */
+  margin-left: 200px;
+  padding-top: 5px;
+  transition: 0.5s;
+}
+
+#itemsnav a {
+  padding: 6px 8px 6px 20px;
+  text-decoration: none;
+  font-size: 16px;
+  color: #cfcfcf;
+  display: block;
+  margin-top: 4px;
+  display: flex;
+}
+.closebtn {
+  top: 0;
+  right: 25px;
+  font-size: 36px;
+  margin-left: 100px;
+}
+.closebtn:hover {
+  background-color: #5c5c5c;
+}
+#itemsnav a:hover {
+  color: #f1f1f1;
+  cursor: pointer;
+  background-color: #6b6a6a;
+}
+
+a img {
+  width: 0.92em;
+  margin-right: 0.6em;
+  margin-top: 3px;
 }
 
 #pim-notes-container {
-    display: grid;
-    grid-template-columns: auto auto auto;
-    grid-template-rows: auto auto;
-    grid-gap: 10px;
-    padding: 24px;
-    gap: 24px;
-    text-align: center;
+  display: grid;
+  grid-template-columns: auto auto auto;
+  grid-template-rows: auto auto;
+  grid-gap: 10px;
+  padding: 24px;
+  gap: 24px;
+  text-align: center;
 }
 
 #custom-note-input {
-    height: 200px;
-    width: 239px;
-    border: none;
-    outline: none;
-    background: rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
-    font-size: 120px;
-    color: rgba(0, 0, 0, 0.5);
-    cursor: pointer;
-    transition: background 0.2s;
+  height: 200px;
+  width: 239px;
+  border: none;
+  outline: none;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  font-size: 120px;
+  color: rgba(0, 0, 0, 0.5);
+  cursor: pointer;
+  transition: background 0.2s;
 }
 
 .note {
-    height: 200px;
-    box-sizing: border-box;
-    padding: 16px;
-    border: none;
-    border-radius: 10px;
-    box-shadow: 0 0 7px rgba(0, 0, 0, 0.15);
-    resize: none;
-    font-size: 16px;
+  height: 200px;
+  box-sizing: border-box;
+  padding: 16px;
+  border: none;
+  border-radius: 10px;
+  box-shadow: 0 0 7px rgba(0, 0, 0, 0.15);
+  resize: none;
+  font-size: 16px;
 }
 
 #pim-images-container {
-    display: grid;
-    grid-template-columns: auto auto auto;
-    grid-template-rows: auto auto;
-    grid-gap: 10px;
-    padding: 24px;
-    gap: 24px;
-    text-align: center;
+  display: grid;
+  grid-template-columns: auto auto auto;
+  grid-template-rows: auto auto;
+  grid-gap: 10px;
+  padding: 24px;
+  gap: 24px;
+  text-align: center;
 }
 
 #custom-image-input {
-    height: 200px;
-    width: 239px;
-    border: none;
-    outline: none;
-    background: rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
-    font-size: 120px;
-    color: rgba(0, 0, 0, 0.5);
-    cursor: pointer;
-    transition: background 0.2s;
+  height: 200px;
+  width: 239px;
+  border: none;
+  outline: none;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  font-size: 120px;
+  color: rgba(0, 0, 0, 0.5);
+  cursor: pointer;
+  transition: background 0.2s;
 }
 
 .image {
-    width: 100%;
-    max-width: 239px;
-    height: auto;
+  width: 100%;
+  max-width: 239px;
+  height: auto;
 }
 
 #add-note {
-    display: none;
+  display: none;
 }
 
 input[type="file"] {
-    display: none;
+  display: none;
 }
 
 * {
-    font-family: 'Roboto Mono', monospace;
+  font-family: "Roboto Mono", monospace;
 }
