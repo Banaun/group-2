@@ -518,7 +518,7 @@ function renderPimPage() {
         </div>
         <div id="itemsnav">
             <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-            <a id="note-nav" onclick="renderNotes(chosenFolderID)"><img src="/images/comment.png" alt="" />Note</a>
+            <a id="note-nav" onclick="renderNotes(chosenFolderID)"><img src="/images/comment.png" alt="" />Notes</a>
             <a onclick="changeItemsHeader("Sound")"><img src="/images/microphone.png" alt="" />Sound</a>   
             <a onclick="changeItemsHeader("Todo")"><img src="/images/check.png" alt="" />Todo</a>
             <a onclick="renderImages()"><img src="/images/copy.png" alt="" />Images</a>

@@ -509,7 +509,7 @@ function renderPimPage() {
   formContainer.innerHTML = "";
   headerContainer.innerHTML = `
         <h1>Your Notes</h1>
-        <h3 id="render-images-button" onclick="openNav()"></h3>
+        <h3 id="render-images-button"></h3>
         <button id="logout-button" onclick="logOut()">Logout</button>    
     `;
   navContainer.innerHTML = `
@@ -517,7 +517,7 @@ function renderPimPage() {
             <a onclick="addFolder()">Add new folder +</a>
         </div>
         <div id="itemsnav">
-            <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+            <a class="closebtn" onclick="closeNav()">&times;</a>
             <a id="note-nav" onclick="renderNotes(chosenFolderID)"><img src="/images/comment.png" alt="" />Notes</a>
             <a onclick="changeItemsHeader("Sound")"><img src="/images/microphone.png" alt="" />Sound</a>   
             <a onclick="changeItemsHeader("Todo")"><img src="/images/check.png" alt="" />Todo</a>
