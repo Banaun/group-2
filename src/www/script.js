@@ -18,6 +18,8 @@ let users = [];
 let notes = [];
 let images = [];
 let folders = [];
+let current;
+let currentItem;
 
 // CHANGE PAGE FUNCTIONS
 
@@ -226,7 +228,8 @@ async function deleteFolder(deletedFolderName, element) {
 async function chooseFolder(folderName) {
   chosenFolderID = await getFolderID(folderName);
   notesContainer.innerHTML = "";
-  await renderNotes(chosenFolderID);
+  imagesContainer.innerHTML = "";
+  //await renderNotes(chosenFolderID);
 }
 
 function createFolderElement(folderName) {
@@ -237,6 +240,21 @@ function createFolderElement(folderName) {
   element.addEventListener("click", () => {
     chooseFolder(folderName);
     openNav();
+    current = document.getElementsByClassName("active");
+
+    // If there's no active class
+    if (current.length > 0) {
+      current[0].className = current[0].className.replace(" active", "");
+    }
+
+    // Add the active class to the current/clicked button
+    element.className += " active";
+
+    // Clear "active-item" from currentItem
+    currentItem = document.getElementsByClassName("active-item");
+      if (currentItem.length > 0) { 
+          currentItem[0].className = currentItem[0].className.replace(" active-item", "");
+      }
   });
 
   element.addEventListener("dblclick", () => {
@@ -381,8 +399,15 @@ function showImage(imageUrl, element) {
 
     window.ondblclick = function(event) {
         if (event.target == modalImg) {
+            let doDelete = confirm("Are you sure you wish to delete this image?");
+    
+            if (doDelete) {
             deleteImage(imageUrl, element);
             modal.style.display = "none";
+            }
+
+            /*deleteImage(imageUrl, element);
+            modal.style.display = "none";*/
         }
     }
 }
@@ -447,13 +472,13 @@ function createImageElement(imageUrl) {
         showImage(imageUrl, element);
     })
 
-    element.addEventListener("dblclick", () => {
+    /*element.addEventListener("dblclick", () => {
         let doDelete = confirm("Are you sure you wish to delete this image?");
     
         if (doDelete) {
           deleteImage(imageUrl, element);
         }
-    })
+    })*/
 
   return element;
 }
@@ -503,7 +528,6 @@ function renderPimPage() {
   formContainer.innerHTML = "";
   headerContainer.innerHTML = `
         <h1>Your Notes</h1>
-        <h3 id="render-images-button" onclick="openNav()">Images</h3>
         <button id="logout-button" onclick="logOut()">Logout</button>    
     `;
   navContainer.innerHTML = `
@@ -512,13 +536,22 @@ function renderPimPage() {
         </div>
         <div id="itemsnav">
             <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-            <a id="note-nav" onclick="renderNotes(chosenFolderID)"><img src="/images/comment.png" alt="" />Note</a>
-            <a><img src="/images/microphone.png" alt="" />Sound</a>   
-            <a><img src="/images/check.png" alt="" />Todo</a>
-            <a onclick="renderImages()"><img src="/images/copy.png" alt="" />Images</a>
-
-            
-    `;
+            <a class="sub-folder-nav-button" onclick="renderNotes(chosenFolderID)"><img src="/images/comment.png" alt="" />Note</a>
+            <a class="sub-folder-nav-button"><img src="/images/microphone.png" alt="" />Sound</a>   
+            <a class="sub-folder-nav-button"><img src="/images/check.png" alt="" />Todo</a>
+            <a class="sub-folder-nav-button" onclick="renderImages()"><img src="/images/copy.png" alt="" />Images</a>        
+        `;
+  var itemsNav = document.getElementById("itemsnav");
+  var btns = itemsNav.getElementsByClassName("sub-folder-nav-button");
+  for (let i = 0; i < btns.length; i++) {
+      btns[i].addEventListener("click", function() {
+      currentItem = document.getElementsByClassName("active-item");
+      if (currentItem.length > 0) { 
+          currentItem[0].className = currentItem[0].className.replace(" active-item", "");
+      }
+      this.className += " active-item";
+  });
+}      
 
   renderFolders();
 }
