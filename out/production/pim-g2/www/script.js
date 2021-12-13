@@ -8,6 +8,7 @@ let addNoteButton;
 let sideNav;
 let modal;
 let modalImg;
+let removeTodoItem;
 
 let loggedIn;
 let authUsername;
@@ -414,8 +415,9 @@ function showImage(imageUrl, element) {
         modal.style.display = "none";
       }
     }
-  };
+  }
 }
+
 
 async function addImage() {
   console.log("addImage() clicked");
@@ -480,15 +482,52 @@ function createImageElement(imageUrl) {
   element.addEventListener("dblclick", () => {
     let doDelete = confirm("Are you sure you wish to delete this image?");
 
-    /*element.addEventListener("dblclick", () => {
-        let doDelete = confirm("Are you sure you wish to delete this image?");
-    
-        if (doDelete) {
-          deleteImage(imageUrl, element);
-        }
-    })*/
-
+  });
   return element;
+}
+
+// TODO FUNCTIONS
+
+function newTodoElement() {
+  let li = document.createElement("li");
+  let inputValue = document.getElementById("myTodoInput").value;
+  let t = document.createTextNode(inputValue);
+  li.appendChild(t);
+
+  if (inputValue === '') {
+    alert("You must write something!");
+  } else {
+    document.getElementById("myUL").appendChild(li);
+  }
+
+  document.getElementById("myTodoInput").value = "";
+
+  let span = document.createElement("SPAN");
+  let txt = document.createTextNode("\u00D7");
+  span.className = "close";
+  span.appendChild(txt);
+  li.appendChild(span);
+
+  removeTodoItem = document.getElementsByClassName("close");
+
+  for (let i = 0; i < removeTodoItem.length; i++) {
+    removeTodoItem[i].onclick = function() {
+        let div = this.parentElement;
+        div.style.display = "none";
+    }
+  }
+
+  for (let i = 0; i < removeTodoItem.length; i++) {
+    removeTodoItem[i].onclick = function() {
+    let div = this.parentElement;
+    div.style.display = "none";
+    }
+  }
+}
+
+function removeAll(){
+  let lst = document.getElementsByTagName("ul");
+    lst[0].innerHTML = "";
 }
 
 // RENDER FUNCTIONS
@@ -575,6 +614,7 @@ async function renderFolders() {
 }
 
 async function renderNotes(folderID) {
+  todoContainer.innerHTML = "";
   imagesContainer.innerHTML = "";
   notesContainer.innerHTML = `
         <label for="add-note" id="custom-note-input">+</label>
@@ -592,6 +632,7 @@ async function renderNotes(folderID) {
 }
 
 async function renderImages() {
+  todoContainer.innerHTML = "";
   notesContainer.innerHTML = "";
   imagesContainer.innerHTML = `
         <label for="image-input" id="custom-image-input">+</label>
@@ -619,4 +660,26 @@ async function renderImages() {
       imagesContainer.querySelector("#custom-image-input"));
   }
   changeItemsHeader("Images");
+}
+
+function renderTodo() {
+  imagesContainer.innerHTML = "";
+  notesContainer.innerHTML = "";
+  todoContainer.innerHTML = `
+    <div class="todo-header">
+      <h2 style="margin:5px">To Do List</h2>
+      <input type="text" id="myTodoInput" placeholder="Title...">
+      <span onclick="newTodoElement()" class="addBtn">Add</span>
+    </div>
+    <ul id="myUL"></ul>
+    <button type="button" id="clear-list" onclick="removeAll()">Clear Items</button>
+  `;
+
+  let list = document.querySelector('ul');
+  list.addEventListener('click', function(ev) {
+    if (ev.target.tagName === 'LI') {
+      ev.target.classList.toggle('checked');
+    }
+  }, 
+  false);
 }

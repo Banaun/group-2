@@ -8,6 +8,7 @@ let addNoteButton;
 let sideNav;
 let modal;
 let modalImg;
+let removeTodoItem;
 
 let loggedIn;
 let authUsername;
@@ -252,9 +253,12 @@ function createFolderElement(folderName) {
 
     // Clear "active-item" from currentItem
     currentItem = document.getElementsByClassName("active-item");
-      if (currentItem.length > 0) { 
-          currentItem[0].className = currentItem[0].className.replace(" active-item", "");
-      }
+    if (currentItem.length > 0) {
+      currentItem[0].className = currentItem[0].className.replace(
+        " active-item",
+        ""
+      );
+    }
   });
 
   element.addEventListener("dblclick", () => {
@@ -281,7 +285,7 @@ function closeNav() {
 function changeItemsHeader(itemName) {
   headerContainer.innerHTML = `
         <h1>Your Notes</h1>
-        <h3 id="render-images-button" onclick="openNav()">${itemName}</h3>
+        <h3 id="items-header" onclick="openNav()">${itemName}</h3>
         <button id="logout-button" onclick="logOut()">Logout</button>    
     `;
 }
@@ -405,10 +409,10 @@ function showImage(imageUrl, element) {
     }
   };
 
-  window.ondblclick = function(event) {
+  window.ondblclick = function (event) {
     if (event.target == modalImg) {
       let doDelete = confirm("Are you sure you wish to delete this image?");
-    
+
       if (doDelete) {
         deleteImage(imageUrl, element);
         modal.style.display = "none";
@@ -479,16 +483,52 @@ function createImageElement(imageUrl) {
 
   element.addEventListener("dblclick", () => {
     let doDelete = confirm("Are you sure you wish to delete this image?");
-
-    /*element.addEventListener("dblclick", () => {
-        let doDelete = confirm("Are you sure you wish to delete this image?");
-    
-        if (doDelete) {
-          deleteImage(imageUrl, element);
-        }
-    })*/
   });
   return element;
+}
+
+// TODO FUNCTIONS
+
+function newTodoElement() {
+  let li = document.createElement("li");
+  let inputValue = document.getElementById("myTodoInput").value;
+  let t = document.createTextNode(inputValue);
+  li.appendChild(t);
+
+  if (inputValue === "") {
+    alert("You must write something!");
+  } else {
+    document.getElementById("myUL").appendChild(li);
+  }
+
+  document.getElementById("myTodoInput").value = "";
+
+  let span = document.createElement("SPAN");
+  let txt = document.createTextNode("\u00D7");
+  span.className = "close";
+  span.appendChild(txt);
+  li.appendChild(span);
+
+  removeTodoItem = document.getElementsByClassName("close");
+
+  for (let i = 0; i < removeTodoItem.length; i++) {
+    removeTodoItem[i].onclick = function () {
+      let div = this.parentElement;
+      div.style.display = "none";
+    };
+  }
+
+  for (let i = 0; i < removeTodoItem.length; i++) {
+    removeTodoItem[i].onclick = function () {
+      let div = this.parentElement;
+      div.style.display = "none";
+    };
+  }
+}
+
+function removeAll() {
+  let lst = document.getElementsByTagName("ul");
+  lst[0].innerHTML = "";
 }
 
 // RENDER FUNCTIONS
@@ -546,20 +586,23 @@ function renderPimPage() {
             <a class="closebtn" onclick="closeNav()">&times;</a>
             <a class="sub-folder-nav-button" onclick="renderNotes(chosenFolderID)"><img src="/images/comment.png" alt="" />Note</a>
             <a class="sub-folder-nav-button"><img src="/images/microphone.png" alt="" />Sound</a>   
-            <a class="sub-folder-nav-button"><img src="/images/check.png" alt="" />Todo</a>
+            <a class="sub-folder-nav-button" onclick="renderTodo()"><img src="/images/check.png" alt="" />Todo</a>
             <a class="sub-folder-nav-button" onclick="renderImages()"><img src="/images/copy.png" alt="" />Images</a>        
         `;
   var itemsNav = document.getElementById("itemsnav");
   var btns = itemsNav.getElementsByClassName("sub-folder-nav-button");
   for (let i = 0; i < btns.length; i++) {
-      btns[i].addEventListener("click", function() {
+    btns[i].addEventListener("click", function () {
       currentItem = document.getElementsByClassName("active-item");
-      if (currentItem.length > 0) { 
-          currentItem[0].className = currentItem[0].className.replace(" active-item", "");
+      if (currentItem.length > 0) {
+        currentItem[0].className = currentItem[0].className.replace(
+          " active-item",
+          ""
+        );
       }
       this.className += " active-item";
-  });
-}      
+    });
+  }
 
   renderFolders();
 }
@@ -575,6 +618,7 @@ async function renderFolders() {
 }
 
 async function renderNotes(folderID) {
+  todoContainer.innerHTML = "";
   imagesContainer.innerHTML = "";
   notesContainer.innerHTML = `
         <label for="add-note" id="custom-note-input">+</label>
@@ -592,6 +636,7 @@ async function renderNotes(folderID) {
 }
 
 async function renderImages() {
+  todoContainer.innerHTML = "";
   notesContainer.innerHTML = "";
   imagesContainer.innerHTML = `
         <label for="image-input" id="custom-image-input">+</label>
@@ -616,7 +661,34 @@ async function renderImages() {
     let imageElement = createImageElement(image.imageUrl);
     imagesContainer.insertBefore(
       imageElement,
-      imagesContainer.querySelector("#custom-image-input"));
+      imagesContainer.querySelector("#custom-image-input")
+    );
   }
   changeItemsHeader("Images");
+}
+
+function renderTodo() {
+  imagesContainer.innerHTML = "";
+  notesContainer.innerHTML = "";
+  todoContainer.innerHTML = `
+    <div class="todo-header">
+      <h2 style="margin:5px">To Do List</h2>
+      <input type="text" id="myTodoInput" placeholder="Title...">
+      <span onclick="newTodoElement()" class="addBtn">Add</span>
+    </div>
+    <ul id="myUL"></ul>
+    <button type="button" id="clear-list" onclick="removeAll()">Clear Items</button>
+  `;
+  changeItemsHeader("Todo");
+
+  let list = document.querySelector("ul");
+  list.addEventListener(
+    "click",
+    function (ev) {
+      if (ev.target.tagName === "LI") {
+        ev.target.classList.toggle("checked");
+      }
+    },
+    false
+  );
 }
