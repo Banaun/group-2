@@ -1,9 +1,18 @@
 package com.pim.g2;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import io.javalin.http.UploadedFile;
 import nosqlite.utilities.Utils;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.*;
+import java.time.Instant;
 import java.util.List;
 import java.util.Objects;
 
@@ -96,6 +105,32 @@ public class Database {
         return notes;
     }
 
+    public List<ImagePost> getImagePosts(String username, int folderID) {
+        List<ImagePost> imagePosts = null;
+
+        try {
+            PreparedStatement stmt = conn.prepareStatement("SELECT Images.imageUrl AS imageUrl " +
+                    "FROM Images " +
+                    "INNER JOIN Folders " +
+                    "ON Folders.id = Images.folderId " +
+                    "INNER JOIN Users " +
+                    "ON Users.id = Folders.userId " +
+                    "WHERE Users.username = ? AND Folders.id = ?");
+            stmt.setString(1, username);
+            stmt.setInt(2, folderID);
+
+            ResultSet rs = stmt.executeQuery();
+
+            ImagePost[] imagesFromRS = (Utils.resultSetToObject(rs, ImagePost[].class));
+            imagePosts = List.of(imagesFromRS);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return imagePosts;
+    }
+
     public Folder getFolderID(String username, String folderName) {
         Folder folder = null;
 
@@ -138,6 +173,37 @@ public class Database {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public void createImagePost(ImagePost imagePost) {
+        try {
+            PreparedStatement stmt = conn.prepareStatement("INSERT INTO Images (folderId, title, imageUrl) VALUES(?, ?, ?)");
+            stmt.setInt(1, imagePost.getFolderId());
+            stmt.setString(2, imagePost.getTitle());
+            stmt.setString(3, imagePost.getImageUrl());
+
+            stmt.executeUpdate();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public String uploadImage(UploadedFile file) {
+        String imageUrl = "/uploads/" + file.getFilename();
+
+        try (var os = new FileOutputStream(Paths.get("src/www" + imageUrl).toString())) {
+
+            os.write(file.getContent().readAllBytes());
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            return null;
+        }
+
+        System.out.println("Image uploaded to " + imageUrl);
+
+        return imageUrl;
     }
 
     public void addFolder(Folder folder) {
@@ -247,6 +313,33 @@ public class Database {
             stmt.executeUpdate();
 
         } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void deleteImage(ImagePost image) {
+        deleteFileUpload(image.getImageUrl());
+
+        try {
+            PreparedStatement stmt = conn.prepareStatement(("DELETE FROM Images WHERE imageUrl = ?"));
+            stmt.setString(1, image.getImageUrl());
+
+            stmt.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void deleteFileUpload(String directoryName) {
+        Path imagePath = Paths.get("src/www/" + directoryName);
+
+        try {
+            Files.delete(imagePath);
+            System.out.println("File @" + directoryName + " successfully removed.");
+
+        } catch (Exception e) {
+            System.err.println("Unable to delete file.");
             e.printStackTrace();
         }
     }
