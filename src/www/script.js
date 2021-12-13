@@ -228,6 +228,7 @@ async function deleteFolder(deletedFolderName, element) {
 
 async function chooseFolder(folderName) {
   chosenFolderID = await getFolderID(folderName);
+  headerContainer.innerHTML = `<h1>${authUsername}'s PIM</h1>`;
   notesContainer.innerHTML = "";
   imagesContainer.innerHTML = "";
   //await renderNotes(chosenFolderID);
@@ -284,7 +285,7 @@ function closeNav() {
 
 function changeItemsHeader(itemName) {
   headerContainer.innerHTML = `
-        <h1>Your Notes</h1>
+        <h1>${authUsername}'s PIM</h1>
         <h3 id="items-header" onclick="openNav()">${itemName}</h3>
         <button id="logout-button" onclick="logOut()">Logout</button>    
     `;
@@ -575,7 +576,7 @@ function renderCreateAccountPage() {
 function renderPimPage() {
   formContainer.innerHTML = "";
   headerContainer.innerHTML = `
-        <h1>Your Notes</h1>
+        <h1>${authUsername}'s PIM</h1>
         <button id="logout-button" onclick="logOut()">Logout</button>    
     `;
   navContainer.innerHTML = `
