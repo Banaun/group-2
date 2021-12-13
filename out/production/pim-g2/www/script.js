@@ -18,6 +18,10 @@ let users = [];
 let notes = [];
 let images = [];
 let folders = [];
+let current;
+let currentItem;
+
+// CHANGE PAGE FUNCTIONS
 
 onhashchange = changePage;
 changePage();
@@ -224,7 +228,8 @@ async function deleteFolder(deletedFolderName, element) {
 async function chooseFolder(folderName) {
   chosenFolderID = await getFolderID(folderName);
   notesContainer.innerHTML = "";
-  await renderNotes(chosenFolderID);
+  imagesContainer.innerHTML = "";
+  //await renderNotes(chosenFolderID);
 }
 
 function createFolderElement(folderName) {
@@ -235,6 +240,21 @@ function createFolderElement(folderName) {
   element.addEventListener("click", () => {
     chooseFolder(folderName);
     openNav();
+    current = document.getElementsByClassName("active");
+
+    // If there's no active class
+    if (current.length > 0) {
+      current[0].className = current[0].className.replace(" active", "");
+    }
+
+    // Add the active class to the current/clicked button
+    element.className += " active";
+
+    // Clear "active-item" from currentItem
+    currentItem = document.getElementsByClassName("active-item");
+      if (currentItem.length > 0) { 
+          currentItem[0].className = currentItem[0].className.replace(" active-item", "");
+      }
   });
 
   element.addEventListener("dblclick", () => {
@@ -385,10 +405,14 @@ function showImage(imageUrl, element) {
     }
   };
 
-  window.ondblclick = function (event) {
+  window.ondblclick = function(event) {
     if (event.target == modalImg) {
-      deleteImage(imageUrl, element);
-      modal.style.display = "none";
+      let doDelete = confirm("Are you sure you wish to delete this image?");
+    
+      if (doDelete) {
+        deleteImage(imageUrl, element);
+        modal.style.display = "none";
+      }
     }
   };
 }
@@ -456,10 +480,13 @@ function createImageElement(imageUrl) {
   element.addEventListener("dblclick", () => {
     let doDelete = confirm("Are you sure you wish to delete this image?");
 
-    if (doDelete) {
-      deleteImage(imageUrl, element);
-    }
-  });
+    /*element.addEventListener("dblclick", () => {
+        let doDelete = confirm("Are you sure you wish to delete this image?");
+    
+        if (doDelete) {
+          deleteImage(imageUrl, element);
+        }
+    })*/
 
   return element;
 }
@@ -477,15 +504,15 @@ function renderLoginPage() {
   headerContainer.innerHTML = "<h2>PIM-g2 Login</h1>";
   formContainer.innerHTML = `
         <form id="login-form">
-            <label for="username">Username</label><br />
+            <label for="username" class="username-label">Username</label><br />
             <input id="username" type="text" /><br />
-            <label for="password">Password</label><br />
+            <label for="password" class="password-label">Password</label><br />
             <input id="password" type="password" /><br />
             <button id="btn-login" type="submit">Login</button>
         </form>
         <button id="btn-go-to-create-account" 
             onclick="goToPage('/#create-account')"> Register account</button>
-    `;
+  `;
 }
 
 function renderCreateAccountPage() {
@@ -494,9 +521,9 @@ function renderCreateAccountPage() {
   notesContainer.innerHTML = "";
   formContainer.innerHTML = `
         <form id="create-account-form">
-            <label for="username">New Username</label><br />
+            <label for="username" class="username-label">New Username</label><br />
             <input id="username" type="text" /><br />
-            <label for="password">New Password</label><br />
+            <label for="password" class="password-label">New Password</label><br />
             <input id="password" type="password" /><br />
             <button id="btn-create-account"type="submit">Create account</button>
         </form>
@@ -509,7 +536,6 @@ function renderPimPage() {
   formContainer.innerHTML = "";
   headerContainer.innerHTML = `
         <h1>Your Notes</h1>
-        <h3 id="render-images-button" onclick="openNav()"></h3>
         <button id="logout-button" onclick="logOut()">Logout</button>    
     `;
   navContainer.innerHTML = `
@@ -517,14 +543,23 @@ function renderPimPage() {
             <a onclick="addFolder()">Add new folder +</a>
         </div>
         <div id="itemsnav">
-            <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-            <a id="note-nav" onclick="renderNotes(chosenFolderID)"><img src="/images/comment.png" alt="" />Notes</a>
-            <a onclick="changeItemsHeader("Sound")"><img src="/images/microphone.png" alt="" />Sound</a>   
-            <a onclick="changeItemsHeader("Todo")"><img src="/images/check.png" alt="" />Todo</a>
-            <a onclick="renderImages()"><img src="/images/copy.png" alt="" />Images</a>
-
-            
-    `;
+            <a class="closebtn" onclick="closeNav()">&times;</a>
+            <a class="sub-folder-nav-button" onclick="renderNotes(chosenFolderID)"><img src="/images/comment.png" alt="" />Note</a>
+            <a class="sub-folder-nav-button"><img src="/images/microphone.png" alt="" />Sound</a>   
+            <a class="sub-folder-nav-button"><img src="/images/check.png" alt="" />Todo</a>
+            <a class="sub-folder-nav-button" onclick="renderImages()"><img src="/images/copy.png" alt="" />Images</a>        
+        `;
+  var itemsNav = document.getElementById("itemsnav");
+  var btns = itemsNav.getElementsByClassName("sub-folder-nav-button");
+  for (let i = 0; i < btns.length; i++) {
+      btns[i].addEventListener("click", function() {
+      currentItem = document.getElementsByClassName("active-item");
+      if (currentItem.length > 0) { 
+          currentItem[0].className = currentItem[0].className.replace(" active-item", "");
+      }
+      this.className += " active-item";
+  });
+}      
 
   renderFolders();
 }
@@ -581,8 +616,7 @@ async function renderImages() {
     let imageElement = createImageElement(image.imageUrl);
     imagesContainer.insertBefore(
       imageElement,
-      imagesContainer.querySelector("#custom-image-input")
-    );
+      imagesContainer.querySelector("#custom-image-input"));
   }
   changeItemsHeader("Images");
 }

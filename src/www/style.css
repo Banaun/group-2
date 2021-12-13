@@ -34,12 +34,6 @@ header h2 {
   color: #818181;
   display: block;
 }
-/*
-#render-images-button:hover {
-  color: #f1f1f1;
-  cursor: pointer;
-}
-*/
 
 #login-form-container {
   margin: auto;
@@ -72,6 +66,13 @@ header h2 {
   background-color: #252525;
   overflow-x: hidden;
   padding-top: 20px;
+}
+
+.active,
+.folder:hover {
+  background-color: #666;
+  color: #cfcfcf;
+  cursor: pointer;
 }
 
 form {
@@ -131,10 +132,6 @@ form {
   display: block;
 }
 
-#sidenav a:hover {
-  color: #f1f1f1;
-  cursor: pointer;
-}
 #itemsnav {
   height: 100%; /* Full-height: remove this if you want "auto" height */
   width: 0; /* Set the width of the sidebar */
@@ -158,6 +155,14 @@ form {
   margin-top: 4px;
   display: flex;
 }
+
+.active-item,
+.sub-folder-nav-button:hover {
+  background-color: #6b6a6a;
+  color: #f1f1f1;
+  cursor: pointer;
+}
+
 .closebtn {
   top: 0;
   right: 25px;
@@ -165,12 +170,7 @@ form {
   margin-left: 100px;
 }
 .closebtn:hover {
-  background-color: #5c5c5c;
-}
-#itemsnav a:hover {
-  color: #f1f1f1;
   cursor: pointer;
-  background-color: #6b6a6a;
 }
 
 a img {

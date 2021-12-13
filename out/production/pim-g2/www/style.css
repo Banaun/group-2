@@ -73,6 +73,12 @@ header h2 {
   padding-top: 20px;
 }
 
+.active, .folder:hover {
+  background-color: #666;
+  color: #cfcfcf;
+  cursor: pointer;
+}
+
 form {
   margin: auto;
   width: 177px;
@@ -130,10 +136,6 @@ form {
   display: block;
 }
 
-#sidenav a:hover {
-  color: #f1f1f1;
-  cursor: pointer;
-}
 #itemsnav {
   height: 100%; /* Full-height: remove this if you want "auto" height */
   width: 0; /* Set the width of the sidebar */
@@ -157,6 +159,13 @@ form {
   margin-top: 4px;
   display: flex;
 }
+
+.active-item, .sub-folder-nav-button:hover {
+  background-color: #6b6a6a;
+  color: #f1f1f1;
+  cursor: pointer;
+}
+
 .closebtn {
   top: 0;
   right: 25px;
@@ -165,11 +174,6 @@ form {
 }
 .closebtn:hover {
   background-color: #5c5c5c;
-}
-#itemsnav a:hover {
-  color: #f1f1f1;
-  cursor: pointer;
-  background-color: #6b6a6a;
 }
 
 a img {
