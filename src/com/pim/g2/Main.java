@@ -57,6 +57,15 @@ public class Main {
             res.json(imagePosts);
         });
 
+        app.get("/rest/users/:username/:folderID/sounds", (req, res) -> {
+            String username = req.params("username");
+            int folderID = Integer.parseInt(req.params("folderID"));
+
+            List<SoundPost> soundPosts = db.getSoundPosts(username, folderID);
+            System.out.println(soundPosts);
+            res.json(soundPosts);
+        });
+
         //POST-METHODS
 
         app.post("/rest/users/:username/:folder/notes", (req, res) -> {
@@ -77,6 +86,24 @@ public class Main {
 
             res.send(imageUrl);
         });
+
+        app.post("/rest/sounds-upload", (req, res) -> {
+            String soundUrl = null;
+
+            UploadedFile file = req.formDataFile("files");
+            soundUrl = db.uploadSound(file);
+            System.out.println(soundUrl);
+            res.send(soundUrl);
+        });
+
+        app.post("/rest/sounds-upload/soundpost", (req, res) -> {
+            SoundPost soundPost= req.body(SoundPost.class);
+
+            db.createSoundPost(soundPost);
+            System.out.println(soundPost);
+        });
+
+
 
         app.post("/rest/file-upload/imagepost", (req, res) -> {
             ImagePost imagePost = req.body(ImagePost.class);

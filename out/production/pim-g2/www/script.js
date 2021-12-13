@@ -4,8 +4,11 @@ let navContainer = document.getElementById("nav-container");
 let notesContainer = document.getElementById("pim-notes-container");
 let imagesContainer = document.getElementById("pim-images-container");
 let todoContainer = document.getElementById("pim-todo-container");
+let soundsContainer = document.getElementById("pim-sound-container");
 let addNoteButton;
 let sideNav;
+let modal;
+let modalImg;
 
 let loggedIn;
 let authUsername;
@@ -40,6 +43,9 @@ function changePage() {
                 alert("You need to be logged in to access the Personal Information Manager.");
                 break;
             }
+        case "sound-page":
+            renderSounds();
+            break;
         default:
             renderLoginPage();
             const loginForm = document.querySelector("#login-form");
@@ -344,8 +350,17 @@ async function getImages() {
     return images;
 }
 
-function showImage() {
+function showImage(element) {
     console.log("showImage() clicked");
+
+    modal.style.display = "block";
+    modalImg.src = element.src;
+
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
 }
 
 async function addImage() {
@@ -384,7 +399,6 @@ async function addImage() {
 
 async function deleteImage(deletedImageUrl, element) {
     console.log("deleteImage() clicked");
-    console.log(deletedImageUrl);
 
     let image = {
         imageUrl: deletedImageUrl,
@@ -400,14 +414,13 @@ async function deleteImage(deletedImageUrl, element) {
 
 function createImageElement(imageUrl) {
     let element = document.createElement("img");
-    console.log(imageUrl);
 
     element.classList.add("image");
     element.src = imageUrl;
     element.alt = "There should be an image here...";
 
     element.addEventListener("click", () => {
-        showImage();
+        showImage(element);
     })
 
     element.addEventListener("dblclick", () => {
@@ -420,7 +433,64 @@ function createImageElement(imageUrl) {
 
     return element;
 }
+// SOUND FUNCTIONS
+async function getSounds(){
+    console.log("chosenFolderID");
 
+    let result = await fetch("/rest/users/" + authUsername + "/" + chosenFolderID + "/sounds");
+    myJSON = await result.text();
+
+    sounds = JSON.parse(myJSON);
+    console.log(sounds)
+
+    return sounds;
+}
+async function addSound(){
+console.log("addSound() clicked");
+
+let files= document.querySelector("#sound-upload[type=file]").files;
+let formData= new FormData();
+
+for(let file of files){
+    formData.append("files",file,file.name);
+}
+
+let uploadResult= await fetch("/rest/sounds-upload",{
+    method: "POST",
+    body: formData
+});
+ let uploadedSoundUrl=await uploadResult.text();
+ console.log(uploadedSoundUrl);
+
+ let soundPost= {
+     folderId: chosenFolderID,
+     title: "dada",
+     soundUrl: uploadedSoundUrl
+ };
+
+ let result= await fetch("/rest/sounds-upload/soundpost", {
+     method: "POST",
+     body: JSON.stringify(soundPost)
+ });
+}
+
+//deleteSound()
+function createSoundElement(soundUrl) {
+    let element = document.createElement("audio");
+
+    //element.classList.add("sound");
+    element.classList.add("audio");
+    element.controls="controls";
+    element.src=soundUrl;
+    
+    console.log(element);
+
+    /*     <audio class="audio" controls>
+    <source src="/sounds/sound1.wav" id="src" />
+  </audio> */
+
+    return element;
+}
 // RENDER FUNCTIONS
 
 function renderLoginPage() {
@@ -467,6 +537,7 @@ function renderPimPage() {
     headerContainer.innerHTML = `
         <h1>Your Notes</h1>
         <a id="render-images-button" onclick="renderImages()">Images</a>
+        <a id="render-sounds-button" onclick="renderSounds()">Sounds</a>
         <button id="logout-button" onclick="logOut()">Logout</button>    
     `;
     navContainer.innerHTML = `
@@ -476,6 +547,8 @@ function renderPimPage() {
     `;
 
     renderFolders();
+    chosenFolderID= 4;
+    getSounds();
 }
 
 async function renderFolders() {
@@ -490,6 +563,7 @@ async function renderFolders() {
 
 async function renderNotes(folderID) {
     imagesContainer.innerHTML = "";
+    soundsContainer.innerHTML = "";
     notesContainer.innerHTML = `
         <label for="add-note" id="custom-note-input">+</label>
         <input id="add-note" type="button"/> 
@@ -506,10 +580,25 @@ async function renderNotes(folderID) {
 
 async function renderImages() {
     notesContainer.innerHTML = "";
+    imagesContainer.innerHTML= "";
+    soundsContainer.innerHTML= "";
     imagesContainer.innerHTML = `
         <label for="image-input" id="custom-image-input">+</label>
-        <input id="image-input" type="file" accept="image/*" oninput="addImage()"/> 
+        <input id="image-input" type="file" accept="image/*" oninput="addImage()"/>
+        <!-- The Modal -->
+        <div id="myModal" class="modal">
+
+            <!-- Modal Content (The Image) -->
+            <img class="modal-content" id="img01">
+
+            <!-- Modal Caption (Image Text) -->
+            <div id="caption"></div>
+
+        </div> 
     `;
+
+    modal = document.getElementById("myModal");
+    modalImg = document.getElementById("img01");
 
     images = await getImages()
     for (const image of images) {
@@ -517,3 +606,29 @@ async function renderImages() {
         imagesContainer.insertBefore(imageElement, imagesContainer.querySelector("#custom-image-input"));
     }
 }
+
+async function renderSounds(){
+    notesContainer.innerHTML = "";
+    imagesContainer.innerHTML = "";
+    renderPimPage();
+    soundsContainer.innerHTML=`
+    <label for="upload" id="add-sound">+</label>
+    <input type="file" id="sound-upload" accept="sound/*" />
+  
+    `
+    let input = document.getElementById("sound-upload");
+    input.addEventListener("change", handleFiles, false);
+    sounds = await getSounds();
+    for (const sound of sounds) {
+        let soundElement = createSoundElement(sound.soundUrl);
+        soundsContainer.insertBefore(soundElement, soundsContainer.querySelector("#add-sound"));
+        console.log(sound);
+    }
+    
+}
+//  This function make sound file play 
+ function handleFiles(event) {
+    let files = event.target.files;
+    $("#src").attr("src", URL.createObjectURL(files[0]));
+    document.querySelector(".audio").load();
+  }
