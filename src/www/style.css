@@ -120,6 +120,7 @@ form {
   font-size: 16px;
   color: #818181;
   display: block;
+  cursor: pointer;
 }
 
 #itemsnav {
@@ -346,10 +347,6 @@ ul li.checked::before {
     color: rgba(0, 0, 0, 0.5);
     cursor: pointer;
     transition: background 0.2s;
-}
-
-#add-sound:hover{
-    
 }
 
 #pim-sound-container{
