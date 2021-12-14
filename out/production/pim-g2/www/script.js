@@ -4,10 +4,12 @@ let navContainer = document.getElementById("nav-container");
 let notesContainer = document.getElementById("pim-notes-container");
 let imagesContainer = document.getElementById("pim-images-container");
 let todoContainer = document.getElementById("pim-todo-container");
+let soundsContainer = document.getElementById("pim-sound-container");
 let addNoteButton;
 let sideNav;
 let modal;
 let modalImg;
+let removeTodoItem;
 
 let loggedIn;
 let authUsername;
@@ -18,6 +20,8 @@ let users = [];
 let notes = [];
 let images = [];
 let folders = [];
+let current;
+let currentItem;
 
 // CHANGE PAGE FUNCTIONS
 
@@ -226,7 +230,8 @@ async function deleteFolder(deletedFolderName, element) {
 async function chooseFolder(folderName) {
   chosenFolderID = await getFolderID(folderName);
   notesContainer.innerHTML = "";
-  await renderNotes(chosenFolderID);
+  imagesContainer.innerHTML = "";
+  //await renderNotes(chosenFolderID);
 }
 
 function createFolderElement(folderName) {
@@ -237,6 +242,21 @@ function createFolderElement(folderName) {
   element.addEventListener("click", () => {
     chooseFolder(folderName);
     openNav();
+    current = document.getElementsByClassName("active");
+
+    // If there's no active class
+    if (current.length > 0) {
+      current[0].className = current[0].className.replace(" active", "");
+    }
+
+    // Add the active class to the current/clicked button
+    element.className += " active";
+
+    // Clear "active-item" from currentItem
+    currentItem = document.getElementsByClassName("active-item");
+      if (currentItem.length > 0) { 
+          currentItem[0].className = currentItem[0].className.replace(" active-item", "");
+      }
   });
 
   element.addEventListener("dblclick", () => {
@@ -381,8 +401,15 @@ function showImage(imageUrl, element) {
 
     window.ondblclick = function(event) {
         if (event.target == modalImg) {
+            let doDelete = confirm("Are you sure you wish to delete this image?");
+    
+            if (doDelete) {
             deleteImage(imageUrl, element);
             modal.style.display = "none";
+            }
+
+            /*deleteImage(imageUrl, element);
+            modal.style.display = "none";*/
         }
     }
 }
@@ -447,15 +474,124 @@ function createImageElement(imageUrl) {
         showImage(imageUrl, element);
     })
 
-    element.addEventListener("dblclick", () => {
+    /*element.addEventListener("dblclick", () => {
         let doDelete = confirm("Are you sure you wish to delete this image?");
     
         if (doDelete) {
           deleteImage(imageUrl, element);
         }
-    })
+    })*/
 
   return element;
+}
+
+// TODO FUNCTIONS
+
+function newTodoElement() {
+  let li = document.createElement("li");
+  let inputValue = document.getElementById("myTodoInput").value;
+  let t = document.createTextNode(inputValue);
+  li.appendChild(t);
+
+  if (inputValue === '') {
+    alert("You must write something!");
+  } else {
+    document.getElementById("myUL").appendChild(li);
+  }
+
+  document.getElementById("myTodoInput").value = "";
+
+  let span = document.createElement("SPAN");
+  let txt = document.createTextNode("\u00D7");
+  span.className = "close";
+  span.appendChild(txt);
+  li.appendChild(span);
+
+  removeTodoItem = document.getElementsByClassName("close");
+
+  for (let i = 0; i < removeTodoItem.length; i++) {
+    removeTodoItem[i].onclick = function() {
+        let div = this.parentElement;
+        div.style.display = "none";
+    }
+  }
+
+  for (let i = 0; i < removeTodoItem.length; i++) {
+    removeTodoItem[i].onclick = function() {
+    let div = this.parentElement;
+    div.style.display = "none";
+    }
+  }
+}
+
+function removeAll(){
+  let lst = document.getElementsByTagName("ul");
+    lst[0].innerHTML = "";
+}
+// SOUND FUNCTIONS
+async function getSounds(){
+    console.log("chosenFolderID");
+
+    let result = await fetch("/rest/users/" + authUsername + "/" + chosenFolderID + "/sounds");
+    myJSON = await result.text();
+
+    sounds = JSON.parse(myJSON);
+    console.log(sounds)
+
+    return sounds;
+}
+async function addSound(){
+console.log("addSound() clicked");
+
+let files= document.querySelector("#sound-upload[type=file]").files;
+let formData= new FormData();
+
+for(let file of files){
+    formData.append("files",file,file.name);
+}
+
+let uploadResult= await fetch("/rest/sounds-upload",{
+    method: "POST",
+    body: formData
+});
+ let uploadedSoundUrl=await uploadResult.text();
+ console.log(uploadedSoundUrl);
+
+ let soundPost= {
+     folderId: chosenFolderID,
+     title: "dada",
+     soundUrl: uploadedSoundUrl
+ };
+
+ let result= await fetch("/rest/sounds-upload/soundpost", {
+     method: "POST",
+     body: JSON.stringify(soundPost)
+ });
+}
+
+//deleteSound()
+function createSoundElement(soundUrl) {
+    let element = document.createElement("audio");
+
+    //element.classList.add("sound");
+    element.classList.add("audio");
+    element.controls="controls";
+    element.src=soundUrl;
+    
+    console.log(element);
+
+    /*     <audio class="audio" controls>
+    <source src="/sounds/sound1.wav" id="src" />
+  </audio> */
+
+    return element;
+}
+
+  //  This function make sound file play 
+function handleFiles(event) {
+  let files = event.target.files;
+  $("#src").attr("src", URL.createObjectURL(files[0]));
+  document.querySelector(".audio").load();
 }
 
 // RENDER FUNCTIONS
@@ -503,7 +639,6 @@ function renderPimPage() {
   formContainer.innerHTML = "";
   headerContainer.innerHTML = `
         <h1>Your Notes</h1>
-        <h3 id="render-images-button" onclick="openNav()">Images</h3>
         <button id="logout-button" onclick="logOut()">Logout</button>    
     `;
   navContainer.innerHTML = `
@@ -512,13 +647,22 @@ function renderPimPage() {
         </div>
         <div id="itemsnav">
             <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-            <a id="note-nav" onclick="renderNotes(chosenFolderID)"><img src="/images/comment.png" alt="" />Note</a>
-            <a><img src="/images/microphone.png" alt="" />Sound</a>   
-            <a><img src="/images/check.png" alt="" />Todo</a>
-            <a onclick="renderImages()"><img src="/images/copy.png" alt="" />Images</a>
-
-            
-    `;
+            <a class="sub-folder-nav-button" onclick="renderNotes(chosenFolderID)"><img src="/images/comment.png" alt="" />Note</a>
+            <a class="sub-folder-nav-button" onclick="renderSounds()"><img src="/images/microphone.png" alt="" />Sound</a>   
+            <a class="sub-folder-nav-button" onclick="renderTodo()"><img src="/images/check.png" alt="" />Todo</a>
+            <a class="sub-folder-nav-button" onclick="renderImages()"><img src="/images/copy.png" alt="" />Images</a>        
+        `;
+  var itemsNav = document.getElementById("itemsnav");
+  var btns = itemsNav.getElementsByClassName("sub-folder-nav-button");
+  for (let i = 0; i < btns.length; i++) {
+      btns[i].addEventListener("click", function() {
+        currentItem = document.getElementsByClassName("active-item");
+        if (currentItem.length > 0) { 
+          currentItem[0].className = currentItem[0].className.replace(" active-item", "");
+        }
+        this.className += " active-item";
+      });
+  }      
 
   renderFolders();
 }
@@ -534,6 +678,8 @@ async function renderFolders() {
 }
 
 async function renderNotes(folderID) {
+  soundsContainer.innerHTML= "";
+  todoContainer.innerHTML = "";
   imagesContainer.innerHTML = "";
   notesContainer.innerHTML = `
         <label for="add-note" id="custom-note-input">+</label>
@@ -550,6 +696,8 @@ async function renderNotes(folderID) {
 }
 
 async function renderImages() {
+  soundsContainer.innerHTML= "";
+  todoContainer.innerHTML = "";
   notesContainer.innerHTML = "";
   imagesContainer.innerHTML = `
         <label for="image-input" id="custom-image-input">+</label>
@@ -574,4 +722,46 @@ async function renderImages() {
         let imageElement = createImageElement(image.imageUrl);
         imagesContainer.insertBefore(imageElement, imagesContainer.querySelector("#custom-image-input"));
     }
+}
+
+function renderTodo() {
+  soundsContainer.innerHTML= "";
+  imagesContainer.innerHTML = "";
+  notesContainer.innerHTML = "";
+  todoContainer.innerHTML = `
+    <div class="todo-header">
+      <h2 style="margin:5px">To Do List</h2>
+      <input type="text" id="myTodoInput" placeholder="Title...">
+      <span onclick="newTodoElement()" class="addBtn">Add</span>
+    </div>
+    <ul id="myUL"></ul>
+    <button type="button" id="clear-list" onclick="removeAll()">Clear Items</button>
+  `;
+
+  let list = document.querySelector('ul');
+  list.addEventListener('click', function(ev) {
+    if (ev.target.tagName === 'LI') {
+      ev.target.classList.toggle('checked');
+    }
+  }, 
+  false);
+}
+
+async function renderSounds(){
+    todoContainer.innerHTML = "";
+    notesContainer.innerHTML = "";
+    imagesContainer.innerHTML = "";
+    soundsContainer.innerHTML=`
+    <label for="sound-upload" id="add-sound">+</label>
+    <input type="file" id="sound-upload" accept="sound/*" />
+    `
+    let input = document.getElementById("sound-upload");
+    input.addEventListener("change", handleFiles, false);
+    sounds = await getSounds();
+    for (const sound of sounds) {
+        let soundElement = createSoundElement(sound.soundUrl);
+        soundsContainer.insertBefore(soundElement, soundsContainer.querySelector("#add-sound"));
+        console.log(sound);
+    }
+    
 }
