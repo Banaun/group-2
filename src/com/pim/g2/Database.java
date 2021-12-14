@@ -131,6 +131,33 @@ public class Database {
         return imagePosts;
     }
 
+    public List<SoundPost> getSoundPosts(String username, int folderID) {
+        List<SoundPost> soundPosts = null;
+
+        try {
+            PreparedStatement stmt = conn.prepareStatement("SELECT Sounds.soundUrl AS soundUrl " +
+                    "FROM Sounds " +
+                    "INNER JOIN Folders " +
+                    "ON Folders.id = Sounds.folderId " +
+                    "INNER JOIN Users " +
+                    "ON Users.id = Folders.userId " +
+                    "WHERE Folders.id = ?");
+
+            stmt.setInt(1, folderID);
+
+            ResultSet rs = stmt.executeQuery();
+
+            SoundPost[] soundsFromRS = (Utils.resultSetToObject(rs, SoundPost[].class));
+            soundPosts = List.of(soundsFromRS);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return soundPosts;
+    }
+
+
     public Folder getFolderID(String username, String folderName) {
         Folder folder = null;
 
@@ -204,6 +231,37 @@ public class Database {
         System.out.println("Image uploaded to " + imageUrl);
 
         return imageUrl;
+    }
+
+    public String uploadSound(UploadedFile file) {
+        String soundUrl = "/sounds/" + file.getFilename();
+        System.out.println(soundUrl);
+
+        try (var os = new FileOutputStream(Paths.get("src/www" + soundUrl).toString())) {
+
+            os.write(file.getContent().readAllBytes());
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            return null;
+        }
+
+        return soundUrl;
+    }
+
+    public void createSoundPost(SoundPost soundPost){
+
+        try {
+            PreparedStatement stmt = conn.prepareStatement("INSERT INTO Sounds (folderId, title, soundUrl) VALUES(?, ?, ?)");
+            stmt.setInt(1, soundPost.getFolderId());
+            stmt.setString(2, soundPost.getTitle());
+            stmt.setString(3, soundPost.getSoundUrl());
+
+            stmt.executeUpdate();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void addFolder(Folder folder) {

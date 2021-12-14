@@ -4,6 +4,7 @@ let navContainer = document.getElementById("nav-container");
 let notesContainer = document.getElementById("pim-notes-container");
 let imagesContainer = document.getElementById("pim-images-container");
 let todoContainer = document.getElementById("pim-todo-container");
+let soundsContainer = document.getElementById("pim-sound-container");
 let addNoteButton;
 let sideNav;
 let modal;
@@ -527,6 +528,71 @@ function removeAll(){
   let lst = document.getElementsByTagName("ul");
     lst[0].innerHTML = "";
 }
+// SOUND FUNCTIONS
+async function getSounds(){
+    console.log("chosenFolderID");
+
+    let result = await fetch("/rest/users/" + authUsername + "/" + chosenFolderID + "/sounds");
+    myJSON = await result.text();
+
+    sounds = JSON.parse(myJSON);
+    console.log(sounds)
+
+    return sounds;
+}
+async function addSound(){
+console.log("addSound() clicked");
+
+let files= document.querySelector("#sound-upload[type=file]").files;
+let formData= new FormData();
+
+for(let file of files){
+    formData.append("files",file,file.name);
+}
+
+let uploadResult= await fetch("/rest/sounds-upload",{
+    method: "POST",
+    body: formData
+});
+ let uploadedSoundUrl=await uploadResult.text();
+ console.log(uploadedSoundUrl);
+
+ let soundPost= {
+     folderId: chosenFolderID,
+     title: "dada",
+     soundUrl: uploadedSoundUrl
+ };
+
+ let result= await fetch("/rest/sounds-upload/soundpost", {
+     method: "POST",
+     body: JSON.stringify(soundPost)
+ });
+}
+
+//deleteSound()
+function createSoundElement(soundUrl) {
+    let element = document.createElement("audio");
+
+    //element.classList.add("sound");
+    element.classList.add("audio");
+    element.controls="controls";
+    element.src=soundUrl;
+    
+    console.log(element);
+
+    /*     <audio class="audio" controls>
+    <source src="/sounds/sound1.wav" id="src" />
+  </audio> */
+
+    return element;
+}
+
+  //  This function make sound file play 
+function handleFiles(event) {
+  let files = event.target.files;
+  $("#src").attr("src", URL.createObjectURL(files[0]));
+  document.querySelector(".audio").load();
+}
 
 // RENDER FUNCTIONS
 
@@ -590,13 +656,13 @@ function renderPimPage() {
   var btns = itemsNav.getElementsByClassName("sub-folder-nav-button");
   for (let i = 0; i < btns.length; i++) {
       btns[i].addEventListener("click", function() {
-      currentItem = document.getElementsByClassName("active-item");
-      if (currentItem.length > 0) { 
+        currentItem = document.getElementsByClassName("active-item");
+        if (currentItem.length > 0) { 
           currentItem[0].className = currentItem[0].className.replace(" active-item", "");
-      }
-      this.className += " active-item";
-  });
-}      
+        }
+        this.className += " active-item";
+      });
+  }      
 
   renderFolders();
 }
@@ -612,6 +678,7 @@ async function renderFolders() {
 }
 
 async function renderNotes(folderID) {
+  soundsContainer.innerHTML= "";
   todoContainer.innerHTML = "";
   imagesContainer.innerHTML = "";
   notesContainer.innerHTML = `
@@ -629,6 +696,7 @@ async function renderNotes(folderID) {
 }
 
 async function renderImages() {
+  soundsContainer.innerHTML= "";
   todoContainer.innerHTML = "";
   notesContainer.innerHTML = "";
   imagesContainer.innerHTML = `
@@ -657,6 +725,7 @@ async function renderImages() {
 }
 
 function renderTodo() {
+  soundsContainer.innerHTML= "";
   imagesContainer.innerHTML = "";
   notesContainer.innerHTML = "";
   todoContainer.innerHTML = `
@@ -676,4 +745,23 @@ function renderTodo() {
     }
   }, 
   false);
+}
+
+async function renderSounds(){
+    todoContainer.innerHTML = "";
+    notesContainer.innerHTML = "";
+    imagesContainer.innerHTML = "";
+    soundsContainer.innerHTML=`
+    <label for="sound-upload" id="add-sound">+</label>
+    <input type="file" id="sound-upload" accept="sound/*" />
+    `
+    let input = document.getElementById("sound-upload");
+    input.addEventListener("change", handleFiles, false);
+    sounds = await getSounds();
+    for (const sound of sounds) {
+        let soundElement = createSoundElement(sound.soundUrl);
+        soundsContainer.insertBefore(soundElement, soundsContainer.querySelector("#add-sound"));
+        console.log(sound);
+    }
+    
 }
