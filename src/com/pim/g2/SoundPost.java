@@ -2,25 +2,25 @@ package com.pim.g2;
 
 public class SoundPost {
 
-        private int id;
-        private int folderId;
-        private String title;
-        private String soundUrl;
+    private int id;
+    private int folderId;
+    private String title;
+    private String soundUrl;
 
-        public SoundPost() {
+    public SoundPost() {
 
-        }
+    }
 
-        public SoundPost(int folderId, String soundUrl) {
-            this.folderId = folderId;
-            this.soundUrl = soundUrl;
-        }
+    public SoundPost(int folderId, String soundUrl) {
+        this.folderId = folderId;
+        this.soundUrl = soundUrl;
+    }
 
-        public SoundPost(int folderId, String title, String soundUrl) {
-            this.folderId = folderId;
-            this.title = title;
-            this.soundUrl = soundUrl;
-        }
+    public SoundPost(int folderId, String title, String soundUrl) {
+        this.folderId = folderId;
+        this.title = title;
+        this.soundUrl = soundUrl;
+    }
 
     public int getId() {
         return id;
