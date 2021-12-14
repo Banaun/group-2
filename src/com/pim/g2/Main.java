@@ -180,6 +180,14 @@ public class Main {
             db.deleteImage(image);
         });
 
+        app.delete("/rest/users/:username/sounds/delete", (req, res) -> {
+            String username = req.params("username");
+
+            SoundPost sound = req.body(SoundPost.class);
+
+            db.deleteSound(sound);
+        });
+
         app.useStatic(Paths.get("src/www"));
 
         app.listen(3000);

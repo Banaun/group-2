@@ -389,6 +389,20 @@ public class Database {
         }
     }
 
+    public void deleteSound(SoundPost sound) {
+        deleteFileUpload(sound.getSoundUrl());
+
+        try {
+            PreparedStatement stmt = conn.prepareStatement(("DELETE FROM Sounds WHERE soundUrl = ?"));
+            stmt.setString(1, sound.getSoundUrl());
+
+            stmt.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void deleteFileUpload(String directoryName) {
         Path imagePath = Paths.get("src/www/" + directoryName);
 
