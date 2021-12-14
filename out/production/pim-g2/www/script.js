@@ -534,20 +534,7 @@ async function addSound() {
   });
 }
 
-async function deleteSound(deletedSoundUrl, element) {
-  console.log("deleteSound() clicked");
-
-  let sound = {
-    SoundUrl: deletedSoundUrl,
-  };
-
-  let result = await fetch("/rest/users/" + authUsername + "/images/delete", {
-    method: "DELETE",
-    body: JSON.stringify(sound),
-  });
-
-  soundsContainer.removeChild(element);
-}
+//deleteSound()
 function createSoundElement(soundUrl) {
   let element = document.createElement("audio");
 

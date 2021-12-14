@@ -231,6 +231,7 @@ function createFolderElement(folderName) {
   element.textContent = folderName;
   element.addEventListener("click", () => {
     chooseFolder(folderName);
+    changeItemsHeader(folderName);
     openNav();
     current = document.getElementsByClassName("active");
 
@@ -251,6 +252,8 @@ function createFolderElement(folderName) {
 
     if (doDelete) {
       deleteFolder(folderName, element);
+      changeItemsHeader("");
+      closeNav();
     }
   });
 
@@ -559,9 +562,13 @@ function renderLoginPage() {
   authPassword = "";
   authUserID = NaN;
   chosenFolderID = NaN;
+  loggedIn = false;
 
+  soundsContainer.style.display = "none";
+  todoContainer.style.display = "none";
+  imagesContainer.style.display = "none";
+  notesContainer.style.display = "none";
   navContainer.innerHTML = "";
-  notesContainer.innerHTML = "";
   headerContainer.innerHTML = "<h2>PIM-g2 Login</h1>";
   formContainer.innerHTML = `
     <form id="login-form">
@@ -576,9 +583,11 @@ function renderLoginPage() {
 }
 
 function renderCreateAccountPage() {
+  todoContainer.innerHTML = "";
+  soundsContainer.innerHTML= "";
+  notesContainer.innerHTML = "";
   navContainer.innerHTML = "";
   headerContainer.innerHTML = "<h2>Create Account</h2>";
-  notesContainer.innerHTML = "";
   formContainer.innerHTML = `
     <form id="create-account-form">
       <label for="username" class="username-label">New Username</label><br />
@@ -636,13 +645,14 @@ async function renderFolders() {
 }
 
 async function renderNotes(folderID) {
-  soundsContainer.innerHTML= "";
-  todoContainer.innerHTML = "";
-  imagesContainer.innerHTML = "";
+  soundsContainer.style.display = "none";
+  todoContainer.style.display = "none";
+  imagesContainer.style.display = "none";
   notesContainer.innerHTML = `
     <label for="add-note" id="custom-note-input">+</label>
     <input id="add-note" type="button"/> 
   `;
+  notesContainer.style.display = "grid";
 
   addNoteButton = notesContainer.querySelector("#custom-note-input");
   addNoteButton.addEventListener("click", () => addNote());
@@ -657,9 +667,9 @@ async function renderNotes(folderID) {
 }
 
 async function renderImages() {
-  soundsContainer.innerHTML= "";
-  todoContainer.innerHTML = "";
-  notesContainer.innerHTML = "";
+  soundsContainer.style.display = "none";
+  todoContainer.style.display = "none";
+  notesContainer.style.display = "none";
   imagesContainer.innerHTML = `
     <label for="image-input" id="custom-image-input">+</label>
     <input id="image-input" type="file" accept="image/*" oninput="addImage()"/>
@@ -674,6 +684,7 @@ async function renderImages() {
 
     </div> 
   `;
+  imagesContainer.style.display = "grid";
 
   modal = document.getElementById("myModal");
   modalImg = document.getElementById("img01");
@@ -691,9 +702,9 @@ async function renderImages() {
 }
 
 function renderTodo() {
-  soundsContainer.innerHTML= "";
-  imagesContainer.innerHTML = "";
-  notesContainer.innerHTML = "";
+  soundsContainer.style.display = "none";
+  notesContainer.style.display = "none";
+  imagesContainer.style.display = "none";
   todoContainer.innerHTML = `
     <div class="todo-header">
       <h2 style="margin:5px">To Do List</h2>
@@ -703,6 +714,7 @@ function renderTodo() {
     <ul id="myUL"></ul>
     <button type="button" id="clear-list" onclick="removeAll()">Clear Items</button>
   `;
+  todoContainer.style.display = "block";
 
   let list = document.querySelector('ul');
   list.addEventListener('click', function(ev) {
@@ -716,13 +728,14 @@ function renderTodo() {
 }
 
 async function renderSounds() {
-  todoContainer.innerHTML = "";
-  notesContainer.innerHTML = "";
-  imagesContainer.innerHTML = "";
+  notesContainer.style.display = "none";
+  todoContainer.style.display = "none";
+  imagesContainer.style.display = "none";
   soundsContainer.innerHTML= `
     <label for="sound-upload" id="add-sound">+</label>
     <input id="sound-upload" type="file" accept="audio/*" oninput="addSound()"/>
   `;
+  soundsContainer.style.display = "grid";
 
   let input = document.getElementById("sound-upload");
   input.addEventListener("change", handleFiles, false);

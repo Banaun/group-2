@@ -30,6 +30,10 @@ header h2 {
   margin: auto;
 }
 
+#login-form {
+  margin-top: 50px;
+}
+
 #main-area-container {
   margin-left: 200px;
   margin-top: 60px;
@@ -151,7 +155,7 @@ form {
   color: #cfcfcf;
   font-size: 24px;
   text-align: center;
-  margin: 0;
+  margin-right: -375px;
   margin-top: 10px;
 }
 
@@ -196,7 +200,7 @@ a img {
   outline: none;
   background: rgba(0, 0, 0, 0.1);
   border-radius: 10px;
-  font-size: 120px;
+  font-size: 135px;
   color: rgba(0, 0, 0, 0.5);
   cursor: pointer;
   transition: background 0.2s;
@@ -230,7 +234,7 @@ a img {
   outline: none;
   background: rgba(0, 0, 0, 0.1);
   border-radius: 10px;
-  font-size: 120px;
+  font-size: 135px;
   color: rgba(0, 0, 0, 0.5);
   cursor: pointer;
   transition: background 0.2s;
@@ -318,13 +322,13 @@ input[type="file"] {
 }
 
 #add-sound{
-    height: 70px;
-    width: 100px;
+    height: 55px;
+    width: 70px;
     border: none;
     outline: none;
     background: rgba(0, 0, 0, 0.1);
     border-radius: 7px;
-    font-size: 50px;
+    font-size: 40px;
     color: rgba(0, 0, 0, 0.5);
     cursor: pointer;
     transition: background 0.2s;
@@ -400,7 +404,8 @@ ul li:hover {
 }
 
 #pim-todo-container{
+  display: block;
   position:absolute;
   top: 10%;
-  left: 35%;
+  left: 53%;
 }
