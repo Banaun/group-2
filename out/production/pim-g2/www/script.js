@@ -228,6 +228,7 @@ async function deleteFolder(deletedFolderName, element) {
 
 async function chooseFolder(folderName) {
   chosenFolderID = await getFolderID(folderName);
+  headerContainer.innerHTML = `<h1>${authUsername}'s PIM</h1>`;
   notesContainer.innerHTML = "";
   imagesContainer.innerHTML = "";
   //await renderNotes(chosenFolderID);
@@ -253,9 +254,12 @@ function createFolderElement(folderName) {
 
     // Clear "active-item" from currentItem
     currentItem = document.getElementsByClassName("active-item");
-      if (currentItem.length > 0) { 
-          currentItem[0].className = currentItem[0].className.replace(" active-item", "");
-      }
+    if (currentItem.length > 0) {
+      currentItem[0].className = currentItem[0].className.replace(
+        " active-item",
+        ""
+      );
+    }
   });
 
   element.addEventListener("dblclick", () => {
@@ -281,8 +285,8 @@ function closeNav() {
 
 function changeItemsHeader(itemName) {
   headerContainer.innerHTML = `
-        <h1>Your Notes</h1>
-        <h3 id="render-images-button" onclick="openNav()">${itemName}</h3>
+        <h1>${authUsername}'s PIM</h1>
+        <h3 id="items-header" onclick="openNav()">${itemName}</h3>
         <button id="logout-button" onclick="logOut()">Logout</button>    
     `;
 }
@@ -406,18 +410,17 @@ function showImage(imageUrl, element) {
     }
   };
 
-  window.ondblclick = function(event) {
+  window.ondblclick = function (event) {
     if (event.target == modalImg) {
       let doDelete = confirm("Are you sure you wish to delete this image?");
-    
+
       if (doDelete) {
         deleteImage(imageUrl, element);
         modal.style.display = "none";
       }
     }
-  }
+  };
 }
-
 
 async function addImage() {
   console.log("addImage() clicked");
@@ -481,7 +484,6 @@ function createImageElement(imageUrl) {
 
   element.addEventListener("dblclick", () => {
     let doDelete = confirm("Are you sure you wish to delete this image?");
-
   });
   return element;
 }
@@ -494,7 +496,7 @@ function newTodoElement() {
   let t = document.createTextNode(inputValue);
   li.appendChild(t);
 
-  if (inputValue === '') {
+  if (inputValue === "") {
     alert("You must write something!");
   } else {
     document.getElementById("myUL").appendChild(li);
@@ -511,23 +513,23 @@ function newTodoElement() {
   removeTodoItem = document.getElementsByClassName("close");
 
   for (let i = 0; i < removeTodoItem.length; i++) {
-    removeTodoItem[i].onclick = function() {
-        let div = this.parentElement;
-        div.style.display = "none";
-    }
+    removeTodoItem[i].onclick = function () {
+      let div = this.parentElement;
+      div.style.display = "none";
+    };
   }
 
   for (let i = 0; i < removeTodoItem.length; i++) {
-    removeTodoItem[i].onclick = function() {
-    let div = this.parentElement;
-    div.style.display = "none";
-    }
+    removeTodoItem[i].onclick = function () {
+      let div = this.parentElement;
+      div.style.display = "none";
+    };
   }
 }
 
-function removeAll(){
+function removeAll() {
   let lst = document.getElementsByTagName("ul");
-    lst[0].innerHTML = "";
+  lst[0].innerHTML = "";
 }
 
 // RENDER FUNCTIONS
@@ -574,7 +576,7 @@ function renderCreateAccountPage() {
 function renderPimPage() {
   formContainer.innerHTML = "";
   headerContainer.innerHTML = `
-        <h1>Your Notes</h1>
+        <h1>${authUsername}'s PIM</h1>
         <button id="logout-button" onclick="logOut()">Logout</button>    
     `;
   navContainer.innerHTML = `
@@ -585,20 +587,23 @@ function renderPimPage() {
             <a class="closebtn" onclick="closeNav()">&times;</a>
             <a class="sub-folder-nav-button" onclick="renderNotes(chosenFolderID)"><img src="/images/comment.png" alt="" />Note</a>
             <a class="sub-folder-nav-button"><img src="/images/microphone.png" alt="" />Sound</a>   
-            <a class="sub-folder-nav-button"><img src="/images/check.png" alt="" />Todo</a>
+            <a class="sub-folder-nav-button" onclick="renderTodo()"><img src="/images/check.png" alt="" />Todo</a>
             <a class="sub-folder-nav-button" onclick="renderImages()"><img src="/images/copy.png" alt="" />Images</a>        
         `;
   var itemsNav = document.getElementById("itemsnav");
   var btns = itemsNav.getElementsByClassName("sub-folder-nav-button");
   for (let i = 0; i < btns.length; i++) {
-      btns[i].addEventListener("click", function() {
+    btns[i].addEventListener("click", function () {
       currentItem = document.getElementsByClassName("active-item");
-      if (currentItem.length > 0) { 
-          currentItem[0].className = currentItem[0].className.replace(" active-item", "");
+      if (currentItem.length > 0) {
+        currentItem[0].className = currentItem[0].className.replace(
+          " active-item",
+          ""
+        );
       }
       this.className += " active-item";
-  });
-}      
+    });
+  }
 
   renderFolders();
 }
@@ -657,7 +662,8 @@ async function renderImages() {
     let imageElement = createImageElement(image.imageUrl);
     imagesContainer.insertBefore(
       imageElement,
-      imagesContainer.querySelector("#custom-image-input"));
+      imagesContainer.querySelector("#custom-image-input")
+    );
   }
   changeItemsHeader("Images");
 }
@@ -674,12 +680,16 @@ function renderTodo() {
     <ul id="myUL"></ul>
     <button type="button" id="clear-list" onclick="removeAll()">Clear Items</button>
   `;
+  changeItemsHeader("Todo");
 
-  let list = document.querySelector('ul');
-  list.addEventListener('click', function(ev) {
-    if (ev.target.tagName === 'LI') {
-      ev.target.classList.toggle('checked');
-    }
-  }, 
-  false);
+  let list = document.querySelector("ul");
+  list.addEventListener(
+    "click",
+    function (ev) {
+      if (ev.target.tagName === "LI") {
+        ev.target.classList.toggle("checked");
+      }
+    },
+    false
+  );
 }

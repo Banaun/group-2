@@ -588,7 +588,8 @@ function renderPimPage() {
             <a class="sub-folder-nav-button" onclick="renderNotes(chosenFolderID)"><img src="/images/comment.png" alt="" />Note</a>
             <a class="sub-folder-nav-button"><img src="/images/microphone.png" alt="" />Sound</a>   
             <a class="sub-folder-nav-button" onclick="renderTodo()"><img src="/images/check.png" alt="" />Todo</a>
-            <a class="sub-folder-nav-button" onclick="renderImages()"><img src="/images/copy.png" alt="" />Images</a>        
+            <a class="sub-folder-nav-button" onclick="renderImages()"><img src="/images/copy.png" alt="" />Images</a>  
+            </div>      
         `;
   var itemsNav = document.getElementById("itemsnav");
   var btns = itemsNav.getElementsByClassName("sub-folder-nav-button");

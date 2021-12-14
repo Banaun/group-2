@@ -59,7 +59,8 @@ header h2 {
   padding-top: 20px;
 }
 
-.active, .folder:hover {
+.active,
+.folder:hover {
   background-color: #666;
   color: #cfcfcf;
   cursor: pointer;
@@ -146,7 +147,16 @@ form {
   display: flex;
 }
 
-.active-item, .sub-folder-nav-button:hover {
+#items-header {
+  color: #cfcfcf;
+  font-size: 24px;
+  text-align: center;
+  margin: 0;
+  margin-top: 10px;
+}
+
+.active-item,
+.sub-folder-nav-button:hover {
   background-color: #6b6a6a;
   color: #f1f1f1;
   cursor: pointer;
@@ -160,6 +170,7 @@ form {
 }
 .closebtn:hover {
   background-color: #5c5c5c;
+  cursor: pointer;
 }
 
 a img {
@@ -278,21 +289,22 @@ input[type="file"] {
   from {
     transform: scale(0);
   }
+}
 
-  ul li.checked {
-    background: rgba(70, 90, 73, 0.842);
-    color: white;
-    text-decoration: line-through;
-  }
-  ul li.checked::before {
-    content: '';
-    position: absolute;
-    border-color: #fff;
-    border-style: solid;
-    border-width: 0 2px 2px 0;
-    top: 10px;
-    left: 16px;
-    transform: rotate(45deg);
-    height: 15px;
-    width: 7px;
-  }
+ul li.checked {
+  background: rgba(70, 90, 73, 0.842);
+  color: white;
+  text-decoration: line-through;
+}
+ul li.checked::before {
+  content: "";
+  position: absolute;
+  border-color: #fff;
+  border-style: solid;
+  border-width: 0 2px 2px 0;
+  top: 10px;
+  left: 16px;
+  transform: rotate(45deg);
+  height: 15px;
+  width: 7px;
+}

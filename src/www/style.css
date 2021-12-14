@@ -2,13 +2,18 @@ body {
   display: flex;
   flex-direction: column;
   margin: 0;
-  background-color: #bdbdbd;
+  background: radial-gradient(rgb(241, 161, 0),rgb(255, 217, 182));
+  
+}
+
+*{
+  font-family: 'PT Serif', serif;
 }
 
 header {
   width: 100%;
   height: 50px;
-  background-color: #252525;
+  background-color: rgb(236, 218, 208);
   position: fixed;
   display: flex;
   flex-direction: row;
@@ -17,17 +22,21 @@ header {
 
 header h1 {
   margin-top: 0;
-  margin-left: 15px;
-  color: #818181;
+  margin-left: 30px;
+  color: black;
 }
 
 header h2 {
   margin: auto;
-  color: #818181;
+  color: black;
 }
 
 #login-form-container {
   margin: auto;
+}
+
+#login-form{
+  background-color: rgb(236, 218, 208);
 }
 
 #main-area-container {
@@ -36,15 +45,24 @@ header h2 {
   display: flex;
   justify-content: center;
   transition: margin-left 0.5s;
+  padding: auto;
+
 }
+
 
 #logout-button {
   margin-left: 200px;
-  width: 80px;
+  width: 60px;
   font-size: 20;
-  background-color: #616161;
-  color: #bdbdbd;
+  background-color: rgb(236, 218, 208) ;
+  color: black;
   font-weight: bold;
+  border: 2px solid black;
+  margin-right: 30px;
+  border: 2px solid black;
+  height: 35px;
+  padding: 2px 2px 3px 3px;
+  margin-top: 6px;
 }
 
 #folder-nav {
@@ -54,14 +72,14 @@ header h2 {
   z-index: 1;
   top: 50px;
   left: 0;
-  background-color: #252525;
+  background-color: white;
   overflow-x: hidden;
   padding-top: 20px;
 }
 
 .active,
 .folder:hover {
-  background-color: #666;
+  background-color: white;
   color: #cfcfcf;
   cursor: pointer;
 }
@@ -73,25 +91,29 @@ form {
   padding: 20px;
   color: black;
   font-weight: bold;
-  background-color: #9f9f9f;
+  background-color: rgb(236, 218, 208);
 }
 
 #btn-login {
-  background-color: #616161;
-  color: white;
+  background-color: rgb(236, 218, 208);
+  color: black;
   margin-top: 20px;
   margin-left: 46px;
   width: 80px;
   height: 35px;
+  border: 2px solid black;
+  font-size: medium;
 }
 
 #btn-create-account {
-  background-color: #616161;
-  color: white;
+  background-color: rgb(236, 218, 208);
+  color: black;
   margin-top: 20px;
   margin-left: 18px;
   width: 140px;
   height: 35px;
+  border: 2px solid black;
+  font-size: medium;
 }
 
 #btn-go-to-create-account {
@@ -99,8 +121,10 @@ form {
   margin-left: 10px;
   width: 200px;
   height: 60px;
-  background-color: #616161;
-  color: white;
+  background-color: rgb(236, 218, 208);
+  color: black;
+  border: 2px solid black;
+  font-size: medium;
 }
 
 #sidenav {
@@ -110,7 +134,7 @@ form {
   z-index: 1; /* Stay on top */
   top: 50px; /* Stay at the top */
   left: 0;
-  background-color: #252525; /* Black */
+  background-color: rgb(255, 217, 182); /* Black */
   overflow-x: hidden; /* Disable horizontal scroll */
   padding-top: 20px;
 }
@@ -119,7 +143,7 @@ form {
   padding: 6px 8px 6px 16px;
   text-decoration: none;
   font-size: 16px;
-  color: #818181;
+  color: black;
   display: block;
 }
 
@@ -130,25 +154,26 @@ form {
   z-index: 1; /* Stay on top */
   top: 50px; /* Stay at the top */
   left: 0;
-  background-color: #5c5c5c; /* Black */
+  background-color: rgb(234, 218, 207); /* Black */
   overflow-x: hidden; /* Disable horizontal scroll */
   margin-left: 200px;
   padding-top: 5px;
   transition: 0.5s;
+  color: black;
 }
 
 #itemsnav a {
   padding: 6px 8px 6px 20px;
   text-decoration: none;
   font-size: 16px;
-  color: #cfcfcf;
   display: block;
   margin-top: 4px;
   display: flex;
+  color: black;
 }
 
 #items-header {
-  color: #cfcfcf;
+  color: black;
   font-size: 24px;
   text-align: center;
   margin: 0;
@@ -157,8 +182,8 @@ form {
 
 .active-item,
 .sub-folder-nav-button:hover {
-  background-color: #6b6a6a;
-  color: #f1f1f1;
+  background-color: white;
+  color: black;
   cursor: pointer;
 }
 
@@ -169,7 +194,7 @@ form {
   margin-left: 100px;
 }
 .closebtn:hover {
-  background-color: #5c5c5c;
+  background-color: white;
   cursor: pointer;
 }
 
@@ -187,6 +212,7 @@ a img {
   padding: 24px;
   gap: 24px;
   text-align: center;
+  position: flex;
 }
 
 #custom-note-input {
@@ -214,13 +240,14 @@ a img {
 }
 
 #pim-images-container {
-  display: grid;
+  display: grid ;
   grid-template-columns: auto auto auto;
-  grid-template-rows: auto auto;
+  grid-template-rows: auto;
   grid-gap: 10px;
   padding: 24px;
   gap: 24px;
   text-align: center;
+  
 }
 
 #custom-image-input {
@@ -242,24 +269,26 @@ a img {
   height: auto;
   cursor: pointer;
   border-radius: 10px;
-  transition: 0.3s;
+  transition: 0.3s;  
 }
 
-.image:hover {
-  opacity: 0.7;
+.image:hover {  
+  padding: 10px;
+  color: #fff;
+  font: 12px Georgia;
+  background: rgba(0, 0, 0, 0.7); 
 }
+
 
 #add-note {
   display: none;
+ 
 }
 
 input[type="file"] {
   display: none;
 }
 
-* {
-  font-family: "Roboto Mono", monospace;
-}
 
 .modal {
   display: none;
@@ -296,6 +325,8 @@ ul li.checked {
   color: white;
   text-decoration: line-through;
 }
+
+
 ul li.checked::before {
   content: "";
   position: absolute;
