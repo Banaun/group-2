@@ -721,7 +721,7 @@ async function renderSounds() {
   imagesContainer.innerHTML = "";
   soundsContainer.innerHTML= `
     <label for="sound-upload" id="add-sound">+</label>
-    <input type="file" id="sound-upload" accept="sound/*" />
+    <input type="file" id="sound-upload" accept="audio/*" />
   `;
 
   let input = document.getElementById("sound-upload");
