@@ -62,7 +62,6 @@ public class Main {
             int folderID = Integer.parseInt(req.params("folderID"));
 
             List<SoundPost> soundPosts = db.getSoundPosts(username, folderID);
-            System.out.println(soundPosts);
             res.json(soundPosts);
         });
 
@@ -92,7 +91,6 @@ public class Main {
 
             UploadedFile file = req.formDataFile("files");
             soundUrl = db.uploadSound(file);
-            System.out.println(soundUrl);
             res.send(soundUrl);
         });
 
@@ -100,7 +98,6 @@ public class Main {
             SoundPost soundPost= req.body(SoundPost.class);
 
             db.createSoundPost(soundPost);
-            System.out.println(soundPost);
         });
 
 
@@ -147,7 +144,6 @@ public class Main {
             String folderID = req.params("folderID");
             String id = req.params("id");
 
-            System.out.println(folderID + " " + username + " " + id);
             Note note = req.body(Note.class);
 
             db.updateNote(note);

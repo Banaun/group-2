@@ -235,7 +235,6 @@ public class Database {
 
     public String uploadSound(UploadedFile file) {
         String soundUrl = "/sounds/" + file.getFilename();
-        System.out.println(soundUrl);
 
         try (var os = new FileOutputStream(Paths.get("src/www" + soundUrl).toString())) {
 
@@ -338,7 +337,6 @@ public class Database {
             stmt.setString(1, note.getNotes());
             stmt.setInt(2, note.getId());
 
-            System.out.println(note.getNotes());
             stmt.executeUpdate();
 
         } catch (SQLException e) {
