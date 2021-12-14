@@ -120,6 +120,7 @@ form {
   font-size: 16px;
   color: #818181;
   display: block;
+  cursor: pointer;
 }
 
 #itemsnav {
@@ -146,7 +147,16 @@ form {
   display: flex;
 }
 
-.active-item, .sub-folder-nav-button:hover {
+#items-header {
+  color: #cfcfcf;
+  font-size: 24px;
+  text-align: center;
+  margin: 0;
+  margin-top: 10px;
+}
+
+.active-item,
+.sub-folder-nav-button:hover {
   background-color: #6b6a6a;
   color: #f1f1f1;
   cursor: pointer;
@@ -160,6 +170,7 @@ form {
 }
 .closebtn:hover {
   background-color: #5c5c5c;
+  cursor: pointer;
 }
 
 a img {
@@ -226,16 +237,16 @@ a img {
 }
 
 .image {
-    width: 100%;
-    max-width: 239px;
-    height: auto;
-    cursor: pointer;
-    border-radius: 10px;
-    transition: 0.3s;
+  width: 100%;
+  max-width: 239px;
+  height: auto;
+  cursor: pointer;
+  border-radius: 10px;
+  transition: 0.3s;
 }
 
 .image:hover {
-    opacity: 0.7;
+  opacity: 0.7;
 }
 
 #add-note {
@@ -247,7 +258,7 @@ input[type="file"] {
 }
 
 * {
-    font-family: 'Roboto Mono', monospace;
+  font-family: "Roboto Mono", monospace;
 }
 
 .modal {
@@ -279,26 +290,7 @@ input[type="file"] {
     to {transform:scale(1)}
 }
 
-ul li.checked {
-    background: rgba(70, 90, 73, 0.842);
-    color: white;
-    text-decoration: line-through;
-}
-
-ul li.checked::before {
-    content: '';
-    position: absolute;
-    border-color: #fff;
-    border-style: solid;
-    border-width: 0 2px 2px 0;
-    top: 10px;
-    left: 16px;
-    transform: rotate(45deg);
-    height: 15px;
-    width: 7px;
-}
-
-  /* Sound designe */
+  /* Sound design */
 #upload{
     position: absolute;
     left: 44%;
@@ -338,10 +330,6 @@ ul li.checked::before {
     transition: background 0.2s;
 }
 
-#add-sound:hover{
-    
-}
-
 #pim-sound-container{
     display: grid;
     grid-template-columns: auto auto auto;
@@ -351,4 +339,68 @@ ul li.checked::before {
     gap: 24px;
     text-align: center;
 
+}
+
+/*TODO CSS*/ /*18 bokstäver gräns per rad*/
+ul li.checked {
+  background: rgba(70, 90, 73, 0.842);
+  color: white;
+  text-decoration: line-through;
+}
+
+ul {
+  margin: 0;
+  padding: 0;
+}
+
+ul li{
+  cursor: pointer;
+  position: relative;
+  list-style-type: none;
+  background: rgb(252, 250, 250);
+  width: 50% !important;
+  max-width: 25em !important;
+  white-space: normal !important;
+  overflow-wrap: break-word !important;
+  border: 2px solid black;
+  }
+
+ul li:nth-child(odd) {
+  border: 2px solid black;
+  background:rgb(175, 153, 153);
+  }
+
+ul li:hover {
+    background: #ddd;
+  }
+
+.addBtn{
+  background: rgb(168, 167, 167);
+  border-radius: 0;
+  border: 2px solid black
+}
+
+.addBtn:hover {
+  background-color: #bbb;
+  cursor:pointer;
+}
+
+.close {
+  position: absolute;
+  margin-left: 120px;
+  padding-left: 5px;
+  padding-right: 5px;
+  right: 0;
+  top: 0;
+}
+
+.close:hover {
+  background-color: rgb(88, 9, 9);
+  color: white;
+}
+
+#pim-todo-container{
+  position:absolute;
+  top: 10%;
+  left: 35%;
 }

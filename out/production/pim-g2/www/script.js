@@ -5,23 +5,24 @@ let notesContainer = document.getElementById("pim-notes-container");
 let imagesContainer = document.getElementById("pim-images-container");
 let todoContainer = document.getElementById("pim-todo-container");
 let soundsContainer = document.getElementById("pim-sound-container");
+
 let addNoteButton;
 let sideNav;
 let modal;
 let modalImg;
 let removeTodoItem;
-
 let loggedIn;
 let authUsername;
 let authPassword;
 let authUserID;
 let chosenFolderID;
+let current;
+let currentItem;
+
 let users = [];
 let notes = [];
 let images = [];
 let folders = [];
-let current;
-let currentItem;
 
 // CHANGE PAGE FUNCTIONS
 
@@ -44,9 +45,7 @@ function changePage() {
         break;
       } else {
         goToPage("/");
-        alert(
-          "You need to be logged in to access the Personal Information Manager."
-        );
+        alert("You need to be logged in to access the Personal Information Manager.");
         break;
       }
     default:
@@ -64,8 +63,6 @@ function goToPage(pageToGo) {
 
 async function logIn(event) {
   event.preventDefault();
-
-  console.log("login");
 
   let uname = document.getElementById("username").value;
   let pwd = document.getElementById("password").value;
@@ -112,8 +109,6 @@ function logOut() {
 
 async function createAccount(event) {
   event.preventDefault();
-
-  console.log("createAccount clicked");
 
   let uname = document.getElementById("username").value;
   let pwd = document.getElementById("password").value;
@@ -177,11 +172,8 @@ async function getFolders() {
 }
 
 async function getFolderID(folderName) {
-  let result = await fetch(
-    "/rest/users/" + authUsername + "/" + folderName + "/folderID"
-  );
+  let result = await fetch("/rest/users/" + authUsername + "/" + folderName + "/folderID");
   myJSON = await result.text();
-
   folderID = JSON.parse(myJSON);
 
   return folderID.id;
@@ -215,13 +207,10 @@ async function deleteFolder(deletedFolderName, element) {
     folderName: deletedFolderName,
   };
 
-  let result = await fetch(
-    "/rest/users/" + authUsername + "/delete/" + deletedFolderName,
-    {
+  let result = await fetch("/rest/users/" + authUsername + "/delete/" + deletedFolderName, {
       method: "DELETE",
       body: JSON.stringify(deletedFolder),
-    }
-  );
+  });
 
   notesContainer.innerHTML = "";
   sideNav.removeChild(element);
@@ -231,7 +220,8 @@ async function chooseFolder(folderName) {
   chosenFolderID = await getFolderID(folderName);
   notesContainer.innerHTML = "";
   imagesContainer.innerHTML = "";
-  //await renderNotes(chosenFolderID);
+  todoContainer.innerHTML = "";
+  soundsContainer.innerHTML = "";
 }
 
 function createFolderElement(folderName) {
@@ -244,15 +234,12 @@ function createFolderElement(folderName) {
     openNav();
     current = document.getElementsByClassName("active");
 
-    // If there's no active class
     if (current.length > 0) {
       current[0].className = current[0].className.replace(" active", "");
     }
 
-    // Add the active class to the current/clicked button
     element.className += " active";
 
-    // Clear "active-item" from currentItem
     currentItem = document.getElementsByClassName("active-item");
       if (currentItem.length > 0) { 
           currentItem[0].className = currentItem[0].className.replace(" active-item", "");
@@ -269,7 +256,9 @@ function createFolderElement(folderName) {
 
   return element;
 }
-// ITEMS BAR FUNCTIONS
+
+// ITEMS NAV FUNCTIONS
+
 function openNav() {
   document.getElementById("itemsnav").style.width = "160px";
   document.getElementById("main-area-container").style.marginLeft = "360px";
@@ -280,14 +269,19 @@ function closeNav() {
   document.getElementById("main-area-container").style.marginLeft = "0";
 }
 
+function changeItemsHeader(itemName) {
+  headerContainer.innerHTML = `
+    <h1>${authUsername}'s PIM</h1>
+    <h3 id="items-header" onclick="openNav()">${itemName}</h3>
+    <button id="logout-button" onclick="logOut()">Logout</button>    
+  `;
+}
+
 // NOTE FUNCTIONS
 
 async function getNotes(folderID) {
-  let result = await fetch(
-    "/rest/users/" + authUsername + "/" + folderID + "/notes"
-  );
+  let result = await fetch("/rest/users/" + authUsername + "/" + folderID + "/notes");
   myJSON = await result.text();
-
   notes = JSON.parse(myJSON);
 
   return notes;
@@ -313,12 +307,10 @@ async function updateNote(noteId, newContent) {
   };
 
   let result = await fetch(
-    "/rest/users/" + authUsername + "/" + chosenFolderID + "/notes/" + noteId,
-    {
+    "/rest/users/" + authUsername + "/" + chosenFolderID + "/notes/" + noteId, {
       method: "PUT",
       body: JSON.stringify(note),
-    }
-  );
+  });
 }
 
 async function saveNote(noteId, content, folder) {
@@ -329,12 +321,10 @@ async function saveNote(noteId, content, folder) {
   };
 
   let result = await fetch(
-    "/rest/users/" + authUsername + "/" + folder + "/notes",
-    {
+    "/rest/users/" + authUsername + "/" + folder + "/notes", {
       method: "POST",
       body: JSON.stringify(note),
-    }
-  );
+  });
 }
 
 async function deleteNote(noteId, element) {
@@ -375,48 +365,38 @@ function createNoteElement(id, content) {
 // IMAGE FUNCTIONS
 
 async function getImages() {
-  console.log(chosenFolderID);
-
   let result = await fetch(
-    "/rest/users/" + authUsername + "/" + chosenFolderID + "/images"
-  );
+    "/rest/users/" + authUsername + "/" + chosenFolderID + "/images");
   myJSON = await result.text();
-
   images = JSON.parse(myJSON);
 
   return images;
 }
 
 function showImage(imageUrl, element) {
-    console.log("showImage() clicked");
+  modal.style.display = "block";
+  modalImg.src = imageUrl;
 
-    modal.style.display = "block";
-    modalImg.src = imageUrl;
-
-    window.onclick = function(event) {
-        if (event.target == modal) {
-            modal.style.display = "none";
-        }
+  window.onclick = function (event) {
+    if (event.target == modal) {
+      modal.style.display = "none";
     }
+  };
 
-    window.ondblclick = function(event) {
-        if (event.target == modalImg) {
-            let doDelete = confirm("Are you sure you wish to delete this image?");
+  window.ondblclick = function(event) {
+    if (event.target == modalImg) {
+      let doDelete = confirm("Are you sure you wish to delete this image?");
     
-            if (doDelete) {
-            deleteImage(imageUrl, element);
-            modal.style.display = "none";
-            }
-
-            /*deleteImage(imageUrl, element);
-            modal.style.display = "none";*/
-        }
+      if (doDelete) {
+        deleteImage(imageUrl, element);
+        modal.style.display = "none";
+      }
     }
+  };
 }
 
-async function addImage() {
-  console.log("addImage() clicked");
 
+async function addImage() {
   // upload image with FormData
   let files = document.querySelector("#image-input[type=file]").files;
   let formData = new FormData();
@@ -425,42 +405,38 @@ async function addImage() {
     formData.append("files", file, file.name);
   }
 
-    // upload selected files to server
-    let uploadResult = await fetch('/rest/image-upload', {
-        method: 'POST',
-        body: formData
-    });
+  // upload selected files to server
+  let uploadResult = await fetch("/rest/image-upload", {
+    method: "POST",
+    body: formData
+  });
 
   // get the uploaded image url from response
   let uploadedImageUrl = await uploadResult.text();
 
-  console.log(uploadedImageUrl);
-
   let imagePost = {
     folderId: chosenFolderID,
     title: "jaja",
-    imageUrl: uploadedImageUrl,
+    imageUrl: uploadedImageUrl
   };
 
   let result = await fetch("/rest/file-upload/imagepost", {
     method: "POST",
-    body: JSON.stringify(imagePost),
+    body: JSON.stringify(imagePost)
   });
 }
 
 async function deleteImage(deletedImageUrl, element) {
-    console.log("deleteImage() clicked");
+  let image = {
+    imageUrl: deletedImageUrl
+  };
 
-    let image = {
-        imageUrl: deletedImageUrl,
-    }
+  let result = await fetch("/rest/users/" + authUsername + "/images/delete", {
+    method: "DELETE",
+    body: JSON.stringify(image)
+  });
 
-    let result = await fetch("/rest/users/" + authUsername + "/images/delete", {
-        method: "DELETE",
-        body: JSON.stringify(image)
-    });
-
-    imagesContainer.removeChild(element);
+  imagesContainer.removeChild(element);
 }
 
 function createImageElement(imageUrl) {
@@ -470,17 +446,9 @@ function createImageElement(imageUrl) {
   element.src = imageUrl;
   element.alt = "There should be an image here...";
 
-    element.addEventListener("click", () => {
-        showImage(imageUrl, element);
-    })
-
-    /*element.addEventListener("dblclick", () => {
-        let doDelete = confirm("Are you sure you wish to delete this image?");
-    
-        if (doDelete) {
-          deleteImage(imageUrl, element);
-        }
-    })*/
+  element.addEventListener("click", () => {
+    showImage(imageUrl, element);
+  });
 
   return element;
 }
@@ -493,7 +461,7 @@ function newTodoElement() {
   let t = document.createTextNode(inputValue);
   li.appendChild(t);
 
-  if (inputValue === '') {
+  if (inputValue === "") {
     alert("You must write something!");
   } else {
     document.getElementById("myUL").appendChild(li);
@@ -528,66 +496,56 @@ function removeAll(){
   let lst = document.getElementsByTagName("ul");
     lst[0].innerHTML = "";
 }
+
 // SOUND FUNCTIONS
-async function getSounds(){
-    console.log("chosenFolderID");
 
-    let result = await fetch("/rest/users/" + authUsername + "/" + chosenFolderID + "/sounds");
-    myJSON = await result.text();
+async function getSounds() {
+  let result = await fetch("/rest/users/" + authUsername + "/" + chosenFolderID + "/sounds");
+  myJSON = await result.text();
+  sounds = JSON.parse(myJSON);
 
-    sounds = JSON.parse(myJSON);
-    console.log(sounds)
-
-    return sounds;
+  return sounds;
 }
-async function addSound(){
-console.log("addSound() clicked");
 
-let files= document.querySelector("#sound-upload[type=file]").files;
-let formData= new FormData();
+async function addSound() {
+  let files= document.querySelector("#sound-upload[type=file]").files;
+  let formData= new FormData();
 
-for(let file of files){
+  for(let file of files){
     formData.append("files",file,file.name);
-}
+  }   
 
-let uploadResult= await fetch("/rest/sounds-upload",{
+  let uploadResult = await fetch("/rest/sounds-upload",{
     method: "POST",
     body: formData
-});
- let uploadedSoundUrl=await uploadResult.text();
- console.log(uploadedSoundUrl);
+  });
 
- let soundPost= {
-     folderId: chosenFolderID,
-     title: "dada",
-     soundUrl: uploadedSoundUrl
- };
+  let uploadedSoundUrl = await uploadResult.text();
 
- let result= await fetch("/rest/sounds-upload/soundpost", {
-     method: "POST",
-     body: JSON.stringify(soundPost)
- });
+  let soundPost= {
+    folderId: chosenFolderID,
+    title: "dada",
+    soundUrl: uploadedSoundUrl
+  };
+
+  let result = await fetch("/rest/sounds-upload/soundpost", {
+    method: "POST",
+    body: JSON.stringify(soundPost)
+  });
 }
 
 //deleteSound()
 function createSoundElement(soundUrl) {
-    let element = document.createElement("audio");
+  let element = document.createElement("audio");
 
-    //element.classList.add("sound");
-    element.classList.add("audio");
-    element.controls="controls";
-    element.src=soundUrl;
+  element.classList.add("audio");
+  element.controls="controls";
+  element.src=soundUrl;
     
-    console.log(element);
-
-    /*     <audio class="audio" controls>
-    <source src="/sounds/sound1.wav" id="src" />
-  </audio> */
-
-    return element;
+  return element;
 }
 
-  //  This function make sound file play 
+  // This function make sound file play 
 function handleFiles(event) {
   let files = event.target.files;
   $("#src").attr("src", URL.createObjectURL(files[0]));
@@ -606,16 +564,15 @@ function renderLoginPage() {
   notesContainer.innerHTML = "";
   headerContainer.innerHTML = "<h2>PIM-g2 Login</h1>";
   formContainer.innerHTML = `
-        <form id="login-form">
-            <label for="username" class="username-label">Username</label><br />
-            <input id="username" type="text" /><br />
-            <label for="password" class="password-label">Password</label><br />
-            <input id="password" type="password" /><br />
-            <button id="btn-login" type="submit">Login</button>
-        </form>
-        <button id="btn-go-to-create-account" 
-            onclick="goToPage('/#create-account')"> Register account</button>
-    `;
+    <form id="login-form">
+      <label for="username" class="username-label">Username</label><br />
+      <input id="username" type="text" /><br />
+      <label for="password" class="password-label">Password</label><br />
+      <input id="password" type="password" /><br />
+      <button id="btn-login" type="submit">Login</button>
+    </form>
+    <button id="btn-go-to-create-account" onclick="goToPage('/#create-account')"> Register account</button>
+  `;
 }
 
 function renderCreateAccountPage() {
@@ -623,45 +580,46 @@ function renderCreateAccountPage() {
   headerContainer.innerHTML = "<h2>Create Account</h2>";
   notesContainer.innerHTML = "";
   formContainer.innerHTML = `
-        <form id="create-account-form">
-            <label for="username" class="username-label">New Username</label><br />
-            <input id="username" type="text" /><br />
-            <label for="password" class="password-label">New Password</label><br />
-            <input id="password" type="password" /><br />
-            <button id="btn-create-account"type="submit">Create account</button>
-        </form>
-        <button id="btn-go-to-create-account" 
-            onclick="goToPage('/')">Back to login page</button>
-    `;
+    <form id="create-account-form">
+      <label for="username" class="username-label">New Username</label><br />
+      <input id="username" type="text" /><br />
+      <label for="password" class="password-label">New Password</label><br />
+      <input id="password" type="password" /><br />
+      <button id="btn-create-account"type="submit">Create account</button>
+    </form>
+    <button id="btn-go-to-create-account" onclick="goToPage('/')">Back to login page</button>
+  `;
 }
 
 function renderPimPage() {
   formContainer.innerHTML = "";
   headerContainer.innerHTML = `
-        <h1>Your Notes</h1>
-        <button id="logout-button" onclick="logOut()">Logout</button>    
-    `;
+    <h1>${authUsername}'s PIM</h1>
+    <button id="logout-button" onclick="logOut()">Logout</button>    
+  `;
   navContainer.innerHTML = `
-        <div id="sidenav">
-            <a onclick="addFolder()">Add new folder +</a>
-        </div>
-        <div id="itemsnav">
-            <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-            <a class="sub-folder-nav-button" onclick="renderNotes(chosenFolderID)"><img src="/images/comment.png" alt="" />Note</a>
-            <a class="sub-folder-nav-button" onclick="renderSounds()"><img src="/images/microphone.png" alt="" />Sound</a>   
-            <a class="sub-folder-nav-button" onclick="renderTodo()"><img src="/images/check.png" alt="" />Todo</a>
-            <a class="sub-folder-nav-button" onclick="renderImages()"><img src="/images/copy.png" alt="" />Images</a>        
-        `;
-  var itemsNav = document.getElementById("itemsnav");
-  var btns = itemsNav.getElementsByClassName("sub-folder-nav-button");
+    <div id="sidenav">
+      <a onclick="addFolder()">Add new folder +</a>
+    </div>
+    <div id="itemsnav">
+      <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+      <a class="sub-folder-nav-button" onclick="renderNotes(chosenFolderID)"><img src="/images/comment.png" alt="" />Note</a>
+      <a class="sub-folder-nav-button" onclick="renderSounds()"><img src="/images/microphone.png" alt="" />Sound</a>   
+      <a class="sub-folder-nav-button" onclick="renderTodo()"><img src="/images/check.png" alt="" />Todo</a>
+      <a class="sub-folder-nav-button" onclick="renderImages()"><img src="/images/copy.png" alt="" />Images</a>
+    </div>        
+  `;
+
+  let itemsNav = document.getElementById("itemsnav");
+  let btns = itemsNav.getElementsByClassName("sub-folder-nav-button");
   for (let i = 0; i < btns.length; i++) {
-      btns[i].addEventListener("click", function() {
-        currentItem = document.getElementsByClassName("active-item");
-        if (currentItem.length > 0) { 
-          currentItem[0].className = currentItem[0].className.replace(" active-item", "");
-        }
-        this.className += " active-item";
-      });
+    btns[i].addEventListener("click", function() {
+      currentItem = document.getElementsByClassName("active-item");
+      if (currentItem.length > 0) { 
+        currentItem[0].className = currentItem[0].className.replace(" active-item", "");
+      }
+      this.className += " active-item";
+    });
   }      
 
   renderFolders();
@@ -682,9 +640,10 @@ async function renderNotes(folderID) {
   todoContainer.innerHTML = "";
   imagesContainer.innerHTML = "";
   notesContainer.innerHTML = `
-        <label for="add-note" id="custom-note-input">+</label>
-        <input id="add-note" type="button"/> 
-    `;
+    <label for="add-note" id="custom-note-input">+</label>
+    <input id="add-note" type="button"/> 
+  `;
+
   addNoteButton = notesContainer.querySelector("#custom-note-input");
   addNoteButton.addEventListener("click", () => addNote());
 
@@ -693,6 +652,8 @@ async function renderNotes(folderID) {
     let noteElement = createNoteElement(note.id, note.notes);
     notesContainer.insertBefore(noteElement, addNoteButton);
   }
+
+  changeItemsHeader("Notes");
 }
 
 async function renderImages() {
@@ -700,28 +661,33 @@ async function renderImages() {
   todoContainer.innerHTML = "";
   notesContainer.innerHTML = "";
   imagesContainer.innerHTML = `
-        <label for="image-input" id="custom-image-input">+</label>
-        <input id="image-input" type="file" accept="image/*" oninput="addImage()"/>
-        <!-- The Modal -->
-        <div id="myModal" class="modal">
+    <label for="image-input" id="custom-image-input">+</label>
+    <input id="image-input" type="file" accept="image/*" oninput="addImage()"/>
+    <!-- The Modal -->
+    <div id="myModal" class="modal">
 
-            <!-- Modal Content (The Image) -->
-            <img class="modal-content" id="img01">
+      <!-- Modal Content (The Image) -->
+      <img class="modal-content" id="img01">
 
-            <!-- Modal Caption (Image Text) -->
-            <div id="caption"></div>
+      <!-- Modal Caption (Image Text) -->
+      <div id="caption"></div>
 
-        </div> 
-    `;
+    </div> 
+  `;
 
-    modal = document.getElementById("myModal");
-    modalImg = document.getElementById("img01");
+  modal = document.getElementById("myModal");
+  modalImg = document.getElementById("img01");
 
-    images = await getImages()
-    for (const image of images) {
-        let imageElement = createImageElement(image.imageUrl);
-        imagesContainer.insertBefore(imageElement, imagesContainer.querySelector("#custom-image-input"));
-    }
+  images = await getImages();
+  for (const image of images) {
+    let imageElement = createImageElement(image.imageUrl);
+    imagesContainer.insertBefore(
+      imageElement,
+      imagesContainer.querySelector("#custom-image-input")
+    );
+  }
+
+  changeItemsHeader("Images");
 }
 
 function renderTodo() {
@@ -745,23 +711,26 @@ function renderTodo() {
     }
   }, 
   false);
+
+  changeItemsHeader("Todo");
 }
 
-async function renderSounds(){
-    todoContainer.innerHTML = "";
-    notesContainer.innerHTML = "";
-    imagesContainer.innerHTML = "";
-    soundsContainer.innerHTML=`
+async function renderSounds() {
+  todoContainer.innerHTML = "";
+  notesContainer.innerHTML = "";
+  imagesContainer.innerHTML = "";
+  soundsContainer.innerHTML= `
     <label for="sound-upload" id="add-sound">+</label>
-    <input type="file" id="sound-upload" accept="sound/*" />
-    `
-    let input = document.getElementById("sound-upload");
-    input.addEventListener("change", handleFiles, false);
-    sounds = await getSounds();
-    for (const sound of sounds) {
-        let soundElement = createSoundElement(sound.soundUrl);
-        soundsContainer.insertBefore(soundElement, soundsContainer.querySelector("#add-sound"));
-        console.log(sound);
-    }
-    
+    <input type="file" id="sound-upload" accept="audio/* oninput="addSound()" />
+  `;
+
+  let input = document.getElementById("sound-upload");
+  input.addEventListener("change", handleFiles, false);
+  sounds = await getSounds();
+  for (const sound of sounds) {
+    let soundElement = createSoundElement(sound.soundUrl);
+    soundsContainer.insertBefore(soundElement, soundsContainer.querySelector("#add-sound"));
+  }
+  
+  changeItemsHeader("Sound");
 }
