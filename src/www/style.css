@@ -146,7 +146,16 @@ form {
   display: flex;
 }
 
-.active-item, .sub-folder-nav-button:hover {
+#items-header {
+  color: #cfcfcf;
+  font-size: 24px;
+  text-align: center;
+  margin: 0;
+  margin-top: 10px;
+}
+
+.active-item,
+.sub-folder-nav-button:hover {
   background-color: #6b6a6a;
   color: #f1f1f1;
   cursor: pointer;
@@ -160,6 +169,7 @@ form {
 }
 .closebtn:hover {
   background-color: #5c5c5c;
+  cursor: pointer;
 }
 
 a img {
@@ -226,16 +236,16 @@ a img {
 }
 
 .image {
-    width: 100%;
-    max-width: 239px;
-    height: auto;
-    cursor: pointer;
-    border-radius: 10px;
-    transition: 0.3s;
+  width: 100%;
+  max-width: 239px;
+  height: auto;
+  cursor: pointer;
+  border-radius: 10px;
+  transition: 0.3s;
 }
 
 .image:hover {
-    opacity: 0.7;
+  opacity: 0.7;
 }
 
 #add-note {
@@ -247,7 +257,7 @@ input[type="file"] {
 }
 
 * {
-    font-family: 'Roboto Mono', monospace;
+  font-family: "Roboto Mono", monospace;
 }
 
 .modal {

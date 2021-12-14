@@ -229,6 +229,7 @@ async function deleteFolder(deletedFolderName, element) {
 
 async function chooseFolder(folderName) {
   chosenFolderID = await getFolderID(folderName);
+  headerContainer.innerHTML = `<h1>${authUsername}'s PIM</h1>`;
   notesContainer.innerHTML = "";
   imagesContainer.innerHTML = "";
   //await renderNotes(chosenFolderID);
@@ -278,6 +279,14 @@ function openNav() {
 function closeNav() {
   document.getElementById("itemsnav").style.width = "0";
   document.getElementById("main-area-container").style.marginLeft = "0";
+}
+
+function changeItemsHeader(itemName) {
+  headerContainer.innerHTML = `
+        <h1>${authUsername}'s PIM</h1>
+        <h3 id="items-header" onclick="openNav()">${itemName}</h3>
+        <button id="logout-button" onclick="logOut()">Logout</button>    
+    `;
 }
 
 // NOTE FUNCTIONS
@@ -388,31 +397,29 @@ async function getImages() {
 }
 
 function showImage(imageUrl, element) {
-    console.log("showImage() clicked");
+  console.log("showImage() clicked");
 
-    modal.style.display = "block";
-    modalImg.src = imageUrl;
+  modal.style.display = "block";
+  modalImg.src = imageUrl;
 
-    window.onclick = function(event) {
-        if (event.target == modal) {
-            modal.style.display = "none";
-        }
+  window.onclick = function (event) {
+    if (event.target == modal) {
+      modal.style.display = "none";
     }
+  };
 
-    window.ondblclick = function(event) {
-        if (event.target == modalImg) {
-            let doDelete = confirm("Are you sure you wish to delete this image?");
+  window.ondblclick = function(event) {
+    if (event.target == modalImg) {
+      let doDelete = confirm("Are you sure you wish to delete this image?");
     
-            if (doDelete) {
-            deleteImage(imageUrl, element);
-            modal.style.display = "none";
-            }
-
-            /*deleteImage(imageUrl, element);
-            modal.style.display = "none";*/
-        }
+      if (doDelete) {
+        deleteImage(imageUrl, element);
+        modal.style.display = "none";
+      }
     }
+  };
 }
+
 
 async function addImage() {
   console.log("addImage() clicked");
@@ -425,11 +432,11 @@ async function addImage() {
     formData.append("files", file, file.name);
   }
 
-    // upload selected files to server
-    let uploadResult = await fetch('/rest/image-upload', {
-        method: 'POST',
-        body: formData
-    });
+  // upload selected files to server
+  let uploadResult = await fetch("/rest/image-upload", {
+    method: "POST",
+    body: formData,
+  });
 
   // get the uploaded image url from response
   let uploadedImageUrl = await uploadResult.text();
@@ -449,18 +456,18 @@ async function addImage() {
 }
 
 async function deleteImage(deletedImageUrl, element) {
-    console.log("deleteImage() clicked");
+  console.log("deleteImage() clicked");
 
-    let image = {
-        imageUrl: deletedImageUrl,
-    }
+  let image = {
+    imageUrl: deletedImageUrl,
+  };
 
-    let result = await fetch("/rest/users/" + authUsername + "/images/delete", {
-        method: "DELETE",
-        body: JSON.stringify(image)
-    });
+  let result = await fetch("/rest/users/" + authUsername + "/images/delete", {
+    method: "DELETE",
+    body: JSON.stringify(image),
+  });
 
-    imagesContainer.removeChild(element);
+  imagesContainer.removeChild(element);
 }
 
 function createImageElement(imageUrl) {
@@ -470,18 +477,9 @@ function createImageElement(imageUrl) {
   element.src = imageUrl;
   element.alt = "There should be an image here...";
 
-    element.addEventListener("click", () => {
-        showImage(imageUrl, element);
-    })
-
-    /*element.addEventListener("dblclick", () => {
-        let doDelete = confirm("Are you sure you wish to delete this image?");
-    
-        if (doDelete) {
-          deleteImage(imageUrl, element);
-        }
-    })*/
-
+  element.addEventListener("click", () => {
+    showImage(imageUrl, element);
+  });
   return element;
 }
 
@@ -493,7 +491,7 @@ function newTodoElement() {
   let t = document.createTextNode(inputValue);
   li.appendChild(t);
 
-  if (inputValue === '') {
+  if (inputValue === "") {
     alert("You must write something!");
   } else {
     document.getElementById("myUL").appendChild(li);
@@ -528,7 +526,9 @@ function removeAll(){
   let lst = document.getElementsByTagName("ul");
     lst[0].innerHTML = "";
 }
+
 // SOUND FUNCTIONS
+
 async function getSounds(){
     console.log("chosenFolderID");
 
@@ -615,7 +615,7 @@ function renderLoginPage() {
         </form>
         <button id="btn-go-to-create-account" 
             onclick="goToPage('/#create-account')"> Register account</button>
-    `;
+  `;
 }
 
 function renderCreateAccountPage() {
@@ -638,7 +638,7 @@ function renderCreateAccountPage() {
 function renderPimPage() {
   formContainer.innerHTML = "";
   headerContainer.innerHTML = `
-        <h1>Your Notes</h1>
+        <h1>${authUsername}'s PIM</h1>
         <button id="logout-button" onclick="logOut()">Logout</button>    
     `;
   navContainer.innerHTML = `
@@ -693,6 +693,7 @@ async function renderNotes(folderID) {
     let noteElement = createNoteElement(note.id, note.notes);
     notesContainer.insertBefore(noteElement, addNoteButton);
   }
+  changeItemsHeader("Notes");
 }
 
 async function renderImages() {
@@ -714,14 +715,44 @@ async function renderImages() {
         </div> 
     `;
 
-    modal = document.getElementById("myModal");
-    modalImg = document.getElementById("img01");
+  modal = document.getElementById("myModal");
+  modalImg = document.getElementById("img01");
 
-    images = await getImages()
-    for (const image of images) {
-        let imageElement = createImageElement(image.imageUrl);
-        imagesContainer.insertBefore(imageElement, imagesContainer.querySelector("#custom-image-input"));
-    }
+  images = await getImages();
+  for (const image of images) {
+    let imageElement = createImageElement(image.imageUrl);
+    imagesContainer.insertBefore(
+      imageElement,
+      imagesContainer.querySelector("#custom-image-input")
+    );
+  }
+  changeItemsHeader("Images");
+}
+
+function renderTodo() {
+  imagesContainer.innerHTML = "";
+  notesContainer.innerHTML = "";
+  todoContainer.innerHTML = `
+    <div class="todo-header">
+      <h2 style="margin:5px">To Do List</h2>
+      <input type="text" id="myTodoInput" placeholder="Title...">
+      <span onclick="newTodoElement()" class="addBtn">Add</span>
+    </div>
+    <ul id="myUL"></ul>
+    <button type="button" id="clear-list" onclick="removeAll()">Clear Items</button>
+  `;
+  changeItemsHeader("Todo");
+
+  let list = document.querySelector("ul");
+  list.addEventListener(
+    "click",
+    function (ev) {
+      if (ev.target.tagName === "LI") {
+        ev.target.classList.toggle("checked");
+      }
+    },
+    false
+  );
 }
 
 function renderTodo() {
