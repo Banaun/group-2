@@ -231,7 +231,7 @@ function createFolderElement(folderName) {
   element.textContent = folderName;
   element.addEventListener("click", () => {
     chooseFolder(folderName);
-    changeItemsHeader(folderName);
+    changeItemsHeader("");
     openNav();
     current = document.getElementsByClassName("active");
 
