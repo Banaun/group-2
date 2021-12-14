@@ -730,32 +730,6 @@ async function renderImages() {
 }
 
 function renderTodo() {
-  imagesContainer.innerHTML = "";
-  notesContainer.innerHTML = "";
-  todoContainer.innerHTML = `
-    <div class="todo-header">
-      <h2 style="margin:5px">To Do List</h2>
-      <input type="text" id="myTodoInput" placeholder="Title...">
-      <span onclick="newTodoElement()" class="addBtn">Add</span>
-    </div>
-    <ul id="myUL"></ul>
-    <button type="button" id="clear-list" onclick="removeAll()">Clear Items</button>
-  `;
-  changeItemsHeader("Todo");
-
-  let list = document.querySelector("ul");
-  list.addEventListener(
-    "click",
-    function (ev) {
-      if (ev.target.tagName === "LI") {
-        ev.target.classList.toggle("checked");
-      }
-    },
-    false
-  );
-}
-
-function renderTodo() {
   soundsContainer.innerHTML= "";
   imagesContainer.innerHTML = "";
   notesContainer.innerHTML = "";
@@ -776,6 +750,7 @@ function renderTodo() {
     }
   }, 
   false);
+  changeItemsHeader("Todo");
 }
 
 async function renderSounds(){
@@ -794,5 +769,5 @@ async function renderSounds(){
         soundsContainer.insertBefore(soundElement, soundsContainer.querySelector("#add-sound"));
         console.log(sound);
     }
-    
+    changeItemsHeader("Sound");
 }
