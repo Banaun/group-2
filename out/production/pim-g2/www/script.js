@@ -534,7 +534,20 @@ async function addSound() {
   });
 }
 
-//deleteSound()
+async function deleteSound(deletedSoundUrl, element) {
+  console.log("deleteSound() clicked");
+
+  let sound = {
+    SoundUrl: deletedSoundUrl,
+  };
+
+  let result = await fetch("/rest/users/" + authUsername + "/images/delete", {
+    method: "DELETE",
+    body: JSON.stringify(sound),
+  });
+
+  soundsContainer.removeChild(element);
+}
 function createSoundElement(soundUrl) {
   let element = document.createElement("audio");
 
@@ -721,7 +734,7 @@ async function renderSounds() {
   imagesContainer.innerHTML = "";
   soundsContainer.innerHTML= `
     <label for="sound-upload" id="add-sound">+</label>
-    <input type="file" id="sound-upload" accept="audio/* oninput="addSound()" />
+    <input id="sound-upload" type="file" accept="audio/*" oninput="addSound()"/>
   `;
 
   let input = document.getElementById("sound-upload");
