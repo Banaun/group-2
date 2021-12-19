@@ -134,18 +134,18 @@ async function createAccount(event) {
     });
 
     continueWithCreation = await result.text();
-  }
 
-  if (continueWithCreation == "true") {
-    loggedIn = true;
-    authUsername = uname;
-    authPassword = pwd;
-    authUserID = await getUserID();
-    alert("Account created successfully.");
-    goToPage("/#pim-page");
-  } else {
-    alert("Username is already taken.");
-    document.getElementById("create-account-form").reset();
+    if (continueWithCreation == "true") {
+      loggedIn = true;
+      authUsername = uname;
+      authPassword = pwd;
+      authUserID = await getUserID();
+      alert("Account created successfully.");
+      goToPage("/#pim-page");
+    } else {
+      alert("Username is already taken.");
+      document.getElementById("create-account-form").reset();
+    }
   }
 }
 
@@ -544,6 +544,11 @@ function createSoundElement(soundUrl) {
   element.classList.add("audio");
   element.controls="controls";
   element.src=soundUrl;
+
+  element.addEventListener("dblclick", () => {
+    console.log("hej");
+    //deleteSound(soundUrl, element);
+  });
     
   return element;
 }
