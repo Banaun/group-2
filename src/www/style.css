@@ -2,13 +2,17 @@ body {
   display: flex;
   flex-direction: column;
   margin: 0;
-  background-color: #bdbdbd;
+  background: rgb(201, 154, 136);
+}
+
+*{
+  font-family: 'PT Serif', serif;
 }
 
 header {
   width: 100%;
   height: 50px;
-  background-color: #252525;
+  background-color: rgb(236, 218, 208);
   position: fixed;
   display: flex;
   flex-direction: row;
@@ -18,12 +22,12 @@ header {
 header h1 {
   margin-top: 0;
   margin-left: 15px;
-  color: #818181;
+  color: black;
 }
 
 header h2 {
   margin: auto;
-  color: #818181;
+  color: black;
 }
 
 #login-form-container {
@@ -33,6 +37,7 @@ header h2 {
 #login-form {
   margin-top: 50px;
   width: auto;
+  background-color: rgb(234, 218, 207);
 }
 
 #main-area-container {
@@ -47,9 +52,10 @@ header h2 {
   margin-left: 200px;
   width: 80px;
   font-size: 20;
-  background-color: #616161;
-  color: #bdbdbd;
+  background-color: rgb(236, 218, 208);
+  color: black;
   font-weight: bold;
+  font-size: medium;
 }
 
 #folder-nav {
@@ -59,13 +65,13 @@ header h2 {
   z-index: 1;
   top: 50px;
   left: 0;
-  background-color: #252525;
+  background-color: rgb(233, 199, 183);
   overflow-x: hidden;
   padding-top: 20px;
 }
 
 .active, .folder:hover {
-  background-color: #666;
+  background-color: white;
   color: #cfcfcf;
   cursor: pointer;
 }
@@ -77,30 +83,35 @@ form {
   padding: 20px;
   color: black;
   font-weight: bold;
-  background-color: #9f9f9f;
+  background-color: rgb(233, 199, 183);
   width: auto;
 }
 
 #create-account-form {
+  background-color: rgb(234, 218, 207);
   margin-top: 50px;
 }
 
 #btn-login {
-  background-color: #616161;
-  color: white;
+  background-color: rgb(234, 218, 207);
+  color: black;
   margin-top: 20px;
   margin-left: 46px;
   width: 80px;
   height: 35px;
+  border: 2px solid black;
+  font-size: medium;
 }
 
 #btn-create-account {
-  background-color: #616161;
-  color: white;
+  background-color: rgb(234, 218, 207);
+  color: black;
   margin-top: 20px;
   margin-left: 18px;
   width: 140px;
   height: 35px;
+  border: 2px solid black;
+  font-size: medium;
 }
 
 #btn-go-to-create-account {
@@ -108,19 +119,21 @@ form {
   margin-left: 10px;
   width: 200px;
   height: 60px;
-  background-color: #616161;
-  color: white;
+  background-color: rgb(234, 218, 207);
+  border: 2px solid black;
+  color: black;
+  font-size: medium;
 }
 
 #sidenav {
-  height: 100%; /* Full-height: remove this if you want "auto" height */
-  width: 200px; /* Set the width of the sidebar */
-  position: fixed; /* Fixed Sidebar (stay in place on scroll) */
-  z-index: 1; /* Stay on top */
-  top: 50px; /* Stay at the top */
+  height: 100%;
+  width: 200px;
+  position: fixed;
+  z-index: 1;
+  top: 50px;
   left: 0;
-  background-color: #252525; /* Black */
-  overflow-x: hidden; /* Disable horizontal scroll */
+  background-color: rgb(230, 194, 170);
+  overflow-x: hidden;
   padding-top: 20px;
 }
 
@@ -128,20 +141,20 @@ form {
   padding: 6px 8px 6px 16px;
   text-decoration: none;
   font-size: 16px;
-  color: #818181;
+  color: black;
   display: block;
   cursor: pointer;
 }
 
 #itemsnav {
-  height: 100%; /* Full-height: remove this if you want "auto" height */
-  width: 0; /* Set the width of the sidebar */
-  position: fixed; /* Fixed Sidebar (stay in place on scroll) */
-  z-index: 1; /* Stay on top */
-  top: 50px; /* Stay at the top */
+  height: 100%;
+  width: 0;
+  position: fixed;
+  z-index: 1;
+  top: 50px;
   left: 0;
-  background-color: #5c5c5c; /* Black */
-  overflow-x: hidden; /* Disable horizontal scroll */
+  background-color: rgb(209, 191, 179);
+  overflow-x: hidden;
   margin-left: 200px;
   padding-top: 5px;
   transition: 0.5s;
@@ -151,14 +164,14 @@ form {
   padding: 6px 8px 6px 20px;
   text-decoration: none;
   font-size: 16px;
-  color: #cfcfcf;
+  color: black;
   display: block;
   margin-top: 4px;
   display: flex;
 }
 
 #items-header {
-  color: #cfcfcf;
+  color: black;
   font-size: 24px;
   text-align: center;
   margin-right: -375px;
@@ -167,7 +180,7 @@ form {
 
 .active-item,
 .sub-folder-nav-button:hover {
-  background-color: #6b6a6a;
+  background-color: white;
   color: #f1f1f1;
   cursor: pointer;
 }
@@ -256,7 +269,10 @@ a img {
 }
 
 .image:hover {
-  opacity: 0.7;
+  padding: 10px;
+  color: #fff;
+  font: 12px Georgia;
+  background: rgba(0, 0, 0, 0.7);
 }
 
 #add-note {
@@ -267,22 +283,18 @@ input[type="file"] {
   display: none;
 }
 
-* {
-  font-family: "Roboto Mono", monospace;
-}
-
 .modal {
     display: none;
     position: fixed;
-    z-index: 1; /* Sit on top */
-    padding-top: 100px; /* Location of the box */
+    z-index: 1;
+    padding-top: 100px;
     left: 0;
     top: 0;
-    width: 100%; /* Full width */
-    height: 100%; /* Full height */
-    overflow: auto; /* Enable scroll if needed */
-    background-color: rgb(0,0,0); /* Fallback color */
-    background-color: rgba(0,0,0,0.9); /* Black w/ opacity */
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgb(0,0,0);
+    background-color: rgba(0,0,0,0.9);
   }
   
   /* Modal Content (Image) */
@@ -311,6 +323,12 @@ input[type="file"] {
     position: absolute;
     left: 40%;
     top: 300px;
+}
+
+.sound-div{
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
 }
 
 #render-sounds-button {

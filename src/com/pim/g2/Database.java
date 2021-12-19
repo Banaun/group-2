@@ -135,7 +135,7 @@ public class Database {
         List<SoundPost> soundPosts = null;
 
         try {
-            PreparedStatement stmt = conn.prepareStatement("SELECT Sounds.soundUrl AS soundUrl " +
+            PreparedStatement stmt = conn.prepareStatement("SELECT Sounds.title AS title, Sounds.soundUrl AS soundUrl " +
                     "FROM Sounds " +
                     "INNER JOIN Folders " +
                     "ON Folders.id = Sounds.folderId " +
@@ -157,6 +157,30 @@ public class Database {
         return soundPosts;
     }
 
+    public List<Todos> getTodo(String username,int folderId){
+        List<Todos> todos = null;
+        try {
+            PreparedStatement stmt = conn.prepareStatement("""
+                SELECT task, todoId,completed FROM todos
+                INNER JOIN Todo
+                ON Todo.id = todos.todoId
+                INNER JOIN Folders
+                ON Folders.id = Todo.folderId
+                INNER JOIN Users
+                ON Users.id = Folders.userId
+                WHERE Users.username = ? AND Todo.folderId = ?""");
+            stmt.setString(1,username);
+            stmt.setInt(2,folderId);
+            ResultSet rs = stmt.executeQuery();
+            Todos[] todoFromRs = (Utils.resultSetToObject(rs,Todos[].class));
+            todos = List.of(todoFromRs);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        return todos;
+    }
 
     public Folder getFolderID(String username, String folderName) {
         Folder folder = null;
@@ -382,6 +406,30 @@ public class Database {
 
             stmt.executeUpdate();
 
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void deleteSound(SoundPost sound) {
+        try {
+            PreparedStatement stmt = conn.prepareStatement(("DELETE FROM Sounds WHERE soundUrl = ?"));
+            stmt.setString(1, sound.getSoundUrl());
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void deleteTodo(int id, String task){
+        PreparedStatement stmt = null;
+        try {
+            stmt = conn.prepareStatement("DELETE FROM todos\n" +
+                    "WHERE todos.todoId = ? AND\n" +
+                    "todos.task = ?");
+            stmt.setInt(1,id);
+            stmt.setString(2,task);
+            stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }

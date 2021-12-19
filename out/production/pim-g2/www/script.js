@@ -181,7 +181,7 @@ async function getFolderID(folderName) {
 
 async function addFolder() {
   let folders = await getFolders();
-  let newFolderName = "New Folder" + "(" + folders.length + ")";
+  let newFolderName = "New Folder" + "(" + (folders.length + 1) + ")";
 
   let newFolder = {
     userID: authUserID,
@@ -527,7 +527,7 @@ async function addSound() {
 
   let soundPost= {
     folderId: chosenFolderID,
-    title: "dada",
+    title: files[0].name,
     soundUrl: uploadedSoundUrl
   };
 
@@ -537,7 +537,19 @@ async function addSound() {
   });
 }
 
-//deleteSound()
+async function deleteSound(deletedSoundUrl){
+  let sound = {
+    soundUrl: deletedSoundUrl
+  };
+
+  let result = await fetch("/rest/users/" + authUsername + "/sounds/delete", {
+    method: "DELETE",
+    body: JSON.stringify(sound)
+  });
+
+  console.log("Delete OK!");
+}
+
 function createSoundElement(soundUrl) {
   let element = document.createElement("audio");
 
@@ -746,9 +758,24 @@ async function renderSounds() {
   input.addEventListener("change", handleFiles, false);
   sounds = await getSounds();
   for (const sound of sounds) {
+    let soundDiv= document.createElement("div");
+    let soundPara= document.createElement("p");
+    deleteBtn= document.createElement("button");
+    deleteBtn.setAttribute("id","demo");
+    deleteBtn.innerHTML="x";
+    console.log(sound);
+    let text= document.createTextNode(sound.title);
+    soundPara.appendChild(text);
+    soundPara.classList.add("sound-title");
+    soundDiv.classList.add("sound-div");
+    soundsContainer.appendChild(soundDiv);
+    soundDiv.appendChild(soundPara);
+    soundPara.appendChild(deleteBtn);
     let soundElement = createSoundElement(sound.soundUrl);
-    soundsContainer.insertBefore(soundElement, soundsContainer.querySelector("#add-sound"));
+    soundDiv.append(soundElement);
+    soundsContainer.insertBefore(soundDiv, soundsContainer.querySelector("#add-sound"));
+    deleteBtn.onclick = function() {deleteSound(sound.soundUrl)};
   }
-  
+
   changeItemsHeader("Sound");
 }

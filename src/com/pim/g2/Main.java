@@ -65,6 +65,14 @@ public class Main {
             res.json(soundPosts);
         });
 
+        app.get("/rest/users/:username/:folderID/todo",(request, response) -> {
+            String username = request.params("username");
+            int folderID = Integer.parseInt(request.params("folderID"));
+            List<Todos> todo = db.getTodo(username,folderID);
+            response.json(todo);
+
+        });
+
         //POST-METHODS
 
         app.post("/rest/users/:username/:folder/notes", (req, res) -> {
@@ -174,6 +182,19 @@ public class Main {
             ImagePost image = req.body(ImagePost.class);
 
             db.deleteImage(image);
+        });
+
+        app.delete("/rest/users/:username/sounds/delete", (req, res) -> {
+            String username = req.params("username");
+            SoundPost sound = req.body(SoundPost.class);
+            db.deleteSound(sound);
+        });
+
+        app.delete("/rest/users/:folderID/:task", (request, response) -> {
+            int folderID = Integer.parseInt(request.params("folderID"));
+            String task = request.params("task");
+            Todos todos = request.body(Todos.class);
+            db.deleteTodo(folderID,task);
         });
 
         app.useStatic(Paths.get("src/www"));
